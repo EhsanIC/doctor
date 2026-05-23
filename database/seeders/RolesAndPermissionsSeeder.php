@@ -27,14 +27,14 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // doctor
             'doctor.view',
-            'doctor.approve',
-            'doctor.reject',
+            'doctor.pending',
+            'doctor.suspended',
             'doctor.disable',
 
             // appointment
             'appointment.view',
             'appointment.create',
-            'appointment.approve',
+            'appointment.pending',
             'appointment.cancel',
         ];
 
@@ -74,7 +74,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // doctor permissions
         $doctor->givePermissionTo([
             'appointment.view',
-            'appointment.approve',
+            'appointment.pending',
             'appointment.cancel',
         ]);
 

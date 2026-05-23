@@ -2,7 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\DoctorProfile;
+use App\Models\Specialty;
 use App\Models\User;
+use Database\Factories\DoctorProfileFactory;
+use Database\Factories\specialtyFactory;
 use Illuminate\Database\Seeder;
 
 class CreateUsersWithRolesSeeder extends Seeder
@@ -28,7 +32,9 @@ class CreateUsersWithRolesSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
 
-        $doctors = User::factory(3)->create();
+        $doctors = User::factory(3)
+        ->has(DoctorProfile::factory())
+        ->create();
 
         foreach ($doctors as $doctor) {
             $doctor->assignRole('doctor');
