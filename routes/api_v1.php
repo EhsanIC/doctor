@@ -54,6 +54,7 @@ Route::prefix('/patient/appointment')->group(function () {
 
 
 // INFO: login for every user (admin doctor user)
+// INFO: doc is done
 Route::post('login', [LoginController::class, 'login']);
 
 // TEST: middleware test  
@@ -62,3 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
         return 'hello';
     });
 });
+
+// TODO: add swagger DOCs for all routes 
+// TODO: add resource for all endpoints
+// TODO: complite resteraction
+// FIX: role can have access to there routes
+
