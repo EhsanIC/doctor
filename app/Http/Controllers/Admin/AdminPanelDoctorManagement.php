@@ -25,22 +25,6 @@ class AdminPanelDoctorManagement extends Controller
         return AdminPanelDoctorsManagementResource::collection($doctors);
     }
 
-    // /**
-    //  * Store a newly created resource in storage.
-    //  */
-    // public function store(Request $request)
-    // {
-    //     //
-    // }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      */
@@ -53,13 +37,5 @@ class AdminPanelDoctorManagement extends Controller
         ]);
 
         return new DoctorProfileResource($doctor);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        //
     }
 }
