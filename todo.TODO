@@ -90,8 +90,7 @@
 [~] 16. Route structure         /doctor/doctor duplication fixed; empty apiResource('') name remains
 [~] 17. Query optimization      Partial eager loading (doctor appointments now filtered by doctor_id)
 [x] 18. Enums for statuses      AppointmentStatus + DoctorStatus enums (incl. 'rejected'), cast in models
-[~] 19. Soft delete             Specialty uses SoftDeletes; DoctorProfile + Appointment
-                                 still missing the trait (columns exist)
+[x] 19. Soft delete             Specialty, DoctorProfile + Appointment all use SoftDeletes
 [x] 20. README documentation    README rewritten with full spec
 [~] 21. Maintainable code       Partially
 
@@ -103,8 +102,7 @@
 3. [FIXED] DoctorAppointmentController now filters by doctor_id and enforces
    ownership (403 for non-owner).
 4. [FIXED] Appointment->doctorProfile() now uses doctor_id foreign key.
-5. DoctorProfile and Appointment models do NOT use the SoftDeletes trait even though
-   migrations add softDeletes() columns.
+5. [FIXED] DoctorProfile and Appointment now use SoftDeletes.
 6. AdminPanelDoctorManagement / AdminPanelDoctorProfileController import
    PhpParser\Comment\Doc (unused leftover).
 7. LoginController returns HTTP 201 instead of 200 for successful login.
@@ -128,8 +126,8 @@
 [x] Complete Swagger docs for all implemented endpoints
 [x] Fix doctor appointment filter + ownership (use doctor_id / doctor profile)
 [x] Fix Appointment->doctorProfile() foreign key (doctor_id)
-[ ] Add SoftDeletes trait to DoctorProfile + Appointment models  <-- NEXT
-[ ] Enforce "pending doctor cannot access panel" (middleware/guard)
+[x] Add SoftDeletes trait to DoctorProfile + Appointment models
+[ ] Enforce "pending doctor cannot access panel" (middleware/guard)  <-- NEXT
 [ ] Real image file upload (store file, validate mime/size, return URL)
 [ ] Service/Repository layer (refactor controllers)
 [ ] Add pagination + eager loading to patient doctor list & doctor appointments
