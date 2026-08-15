@@ -1,0 +1,142 @@
+================================================================================
+ PROJECT TODO - Doctor Management & Simple Appointment Booking System
+================================================================================
+ Generated: 2026-08-12
+ Legend:  [x] Implemented   [~] Partially implemented   [ ] Not implemented
+
+================================================================================
+ 1. USER ROLES
+================================================================================
+[x] Management (admin)     -> Role created in RolesAndPermissionsSeeder
+[x] Doctor                 -> Role created in RolesAndPermissionsSeeder
+[x] Regular User (patient) -> Role created in RolesAndPermissionsSeeder
+
+================================================================================
+ 2. ADMIN CAPABILITIES
+================================================================================
+--- Specialty Management --------------------------------------------------------
+[ ] Add specialty          -> NO controller/routes (model + migration + seeder only)
+[ ] Edit specialty         -> NOT implemented
+[ ] Delete specialty       -> NOT implemented
+
+--- Doctor Management -----------------------------------------------------------
+[x] View list of doctors   -> GET /api/v1/admin/doctors (AdminPanelDoctorManagement@index)
+                              NOTE: uses ->get() (no pagination)
+[~] Approve doctor         -> via generic status update (set status = active)
+[~] Reject doctor          -> via generic status update (status = rejected; 'rejected' is in enum)
+[~] Deactivate doctor      -> via generic status update (set status = suspended)
+    -> All three are handled by a single endpoint:
+       PUT/PATCH /api/v1/admin/doctors/{doctor} (UpdateDoctorStatusRequest)
+
+--- Doctor Profile Editing (by admin) -------------------------------------------
+[x] Edit specialty         -> PATCH/PUT /api/v1/admin/doctors/profile/{profile}
+[x] Edit description (bio)
+[x] Edit status
+[~] Edit image             -> image is a plain string; NO real file upload/storage
+[~] Profile list           -> GET .../profile uses paginate() (only paginated endpoint)
+
+================================================================================
+ 3. DOCTOR CAPABILITIES
+================================================================================
+--- Registration ----------------------------------------------------------------
+[x] Register               -> POST /api/v1/doctor/register
+[x] Role assignment        -> assigns 'doctor' role (was 'admin'; fixed)
+[x] Profile created        -> DoctorProfile with status = pending
+[ ] Block panel until approved -> NOT enforced (no middleware/guard rejects a pending doctor)
+
+--- Complete Profile ------------------------------------------------------------
+[x] View own profile       -> GET /api/v1/doctor/profile/{profile} (policy: view + permission:profile.view)
+[x] Update own profile     -> PATCH /api/v1/doctor/profile/{profile} (policy: update + permission:profile.update)
+[x] Fields editable: mobile, medical_code, image (string), specialty_id, address,
+    working_hours, bio
+[~] Name                   -> lives on User model, no doctor endpoint to edit it
+
+--- Appointment Management (doctor) ----------------------------------------------
+[x] View appointments      -> GET /api/v1/doctor/appointment (permission:appointment.view)
+[x] Approve appointment    -> PATCH /api/v1/doctor/appointment/{appointment} (permission:appointment.pending|cancel)
+[x] Cancel appointment     -> same PATCH endpoint (status = canceled)
+    -> BUG: filters/checks by user_id (patient) instead of doctor_id (see bugs)
+
+================================================================================
+ 4. REGULAR USER (PATIENT) CAPABILITIES
+================================================================================
+[x] Register               -> POST /api/v1/register (patient role, auto-login; no approval)
+[x] View approved doctors  -> GET /api/v1/patient/appointment (whereStatus 'active', permission:doctor.view)
+                              NOTE: no pagination, no eager loading
+[x] Book appointment       -> POST /api/v1/patient/appointment (auth:sanctum + permission:appointment.create)
+
+================================================================================
+ 5. TECHNICAL REQUIREMENTS
+================================================================================
+[~]  1. Full form validation    FormRequests exist for most endpoints; login uses
+                                 inline validate(); doctor status rule uses
+                                 in:active,inactive,pending (mismatches DoctorStatus enum)
+[x]  2. Access control          Spatie permission + role middleware + policy applied consistently
+                                 (admin=role:admin, doctor/patient=permission middleware)
+[x]  3. Middleware & Policy     Spatie built-in RoleMiddleware/PermissionMiddleware + DoctorProfilePolicy
+[~]  4. Clean architecture      Logic lives in controllers; no service/repository layer
+[~]  5. SOLID principles        Partially followed
+[x]  6. Eloquent relations      Defined on all models, BUT Appointment->doctorProfile()
+                                 foreign key is broken (looks for doctor_profile_id)
+[~]  7. Eager loading           Partial: admin doctor list (with) + profile show (load) only
+[~]  8. Pagination              Only admin profile index paginates
+[ ]  9. Secure file/image upload Image is stored as a string; no storage, mime/size validation
+[ ] 10. Service/Repository      No Services or Repositories directories exist
+[x] 11. Migrations              All tables migrated (users, specialties, doctor_profiles,
+                                 appointments, permission tables, tokens)
+[~] 12. Error handling          No custom exception handling / try-catch
+[~] 13. Git clean commits       No commits yet (uncommitted changes)
+[~] 14. DRY                     Some duplication remains
+[x] 15. Security best practices Register assigns 'doctor' role; patient routes authenticated
+[~] 16. Route structure         /doctor/doctor duplication fixed; empty apiResource('') name remains
+[~] 17. Query optimization      Partial eager loading; doctor appointments filtered by wrong column
+[x] 18. Enums for statuses      AppointmentStatus + DoctorStatus enums (incl. 'rejected'), cast in models
+[~] 19. Soft delete             softDeletes() columns exist, but models are MISSING the
+                                 SoftDeletes trait -> soft delete NOT functional
+[x] 20. README documentation    README rewritten with full spec
+[~] 21. Maintainable code       Partially
+
+================================================================================
+ 6. KNOWN BUGS / ISSUES
+================================================================================
+1. [FIXED] DoctorRegisterContoller assigned role 'admin' instead of 'doctor'.
+2. [FIXED] Patient "book appointment" POST route had no auth middleware (now auth:sanctum).
+3. DoctorAppointmentController filters appointments by user_id (patient), but a
+   doctor's appointments are stored under doctor_id (doctor_profiles.id).
+   -> doctor sees wrong appointments; ownership check compares auth()->id() to
+      appointment->user_id (patient), so approve/cancel authorization is wrong.
+4. Appointment model: doctorProfile() relation has no explicit foreign key, so
+   Laravel looks for doctor_profile_id (column is doctor_id). Relationship is broken.
+5. DoctorProfile and Appointment models do NOT use the SoftDeletes trait even though
+   migrations add softDeletes() columns.
+6. AdminPanelDoctorManagement / AdminPanelDoctorProfileController import
+   PhpParser\Comment\Doc (unused leftover).
+7. LoginController returns HTTP 201 instead of 200 for successful login.
+8. UpdateDoctorProfileRequest status rule is in:active,inactive,pending but the
+   DoctorStatus enum values are pending/active/rejected/suspended/vacation/archived.
+9. [FIXED] Route prefix '/doctor/doctor/...' duplication (now /api/v1/doctor/...).
+10. Tests: AdminLoginTest fixed (now posts /api/v1/login); NewExampleTest is still a
+    placeholder ('nigga').
+11. [FIXED] Swagger docs now cover login, doctor/patient register, admin doctor routes,
+    doctor profile/appointments, patient appointments.
+
+================================================================================
+ 7. NOT IMPLEMENTED / NEXT STEPS (prioritized)
+================================================================================
+[ ] Specialty CRUD: controller + routes + request + resource (admin only)   <-- NEXT
+[x] Fix doctor register role assignment (doctor, not admin)
+[x] Add auth:sanctum to patient POST (and fix patient GET guard)
+[x] Add permission middleware to doctor profile/appointment routes
+[x] Fix/expand tests (login path, role/permission middleware, register coverage)
+[~] Add 'rejected' status (enum + admin validation + seeder permission done)
+[x] Complete Swagger docs for all implemented endpoints
+[ ] Fix doctor appointment filter + ownership (use doctor_id / doctor profile)
+[ ] Fix Appointment->doctorProfile() foreign key (doctor_id)
+[ ] Add SoftDeletes trait to DoctorProfile + Appointment models
+[ ] Enforce "pending doctor cannot access panel" (middleware/guard)
+[ ] Real image file upload (store file, validate mime/size, return URL)
+[ ] Service/Repository layer (refactor controllers)
+[ ] Add pagination + eager loading to patient doctor list & doctor appointments
+[ ] Add logout endpoint
+[ ] Make git commits clean/organized + push to GitHub repo "doctor"
+================================================================================

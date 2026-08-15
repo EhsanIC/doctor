@@ -1,50 +1,797 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Doctor API",
+        "title": "Doctor Management & Appointment Booking API",
+        "description": "REST API for the Doctor Management and Simple Appointment Booking System.\n\nRoles: Management (admin), Doctor, Regular user (patient).\n\nAuthentication uses Laravel Sanctum bearer tokens. Obtain a token from POST /api/v1/login, then send it as `Authorization: Bearer <token>`.",
+        "contact": {
+            "name": "Support",
+            "email": "mebrahimi405@yahoo.com"
+        },
         "version": "1.0.0"
     },
     "servers": [
         {
             "url": "http://127.0.0.1:8000",
-            "description": "Local"
+            "description": "Local development"
         }
     ],
     "paths": {
-        "/api/v1/login": {
-            "post": {
+        "/api/v1/admin/doctors": {
+            "get": {
                 "tags": [
-                    "Auth"
+                    "Admin"
                 ],
-                "summary": "Login",
-                "operationId": "b981681c9afe6154f748787bffba4554",
+                "summary": "List all doctors",
+                "description": "Display a listing of the resource.",
+                "operationId": "adminListDoctors",
+                "responses": {
+                    "200": {
+                        "description": "List of doctors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DoctorManagementItem"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/doctors/{doctor}": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Approve / reject / deactivate a doctor (PUT)",
+                "operationId": "adminUpdateDoctorStatusPut",
+                "parameters": [
+                    {
+                        "name": "doctor",
+                        "in": "path",
+                        "description": "Doctor profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LoginRequest"
-                            },
-                            "example": {
-                                "email": "admin@test.com",
-                                "password": "password"
+                                "$ref": "#/components/schemas/UpdateDoctorStatusRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Updated doctor profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorProfile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Approve / reject / deactivate a doctor",
+                "description": "Change a doctor's status. Use 'active' to approve, 'suspended' to deactivate.",
+                "operationId": "adminUpdateDoctorStatus",
+                "parameters": [
+                    {
+                        "name": "doctor",
+                        "in": "path",
+                        "description": "Doctor profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDoctorStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated doctor profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorProfile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/doctors/profile": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List all doctor profiles (paginated)",
+                "description": "Display a listing of the resource.",
+                "operationId": "adminListDoctorProfiles",
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of doctor profiles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedDoctorProfile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/doctors/profile/{profile}": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Edit a doctor profile (PUT)",
+                "operationId": "adminUpdateDoctorProfilePut",
+                "parameters": [
+                    {
+                        "name": "profile",
+                        "in": "path",
+                        "description": "Doctor profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDoctorProfileAdminRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated doctor profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorProfile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Edit a doctor profile",
+                "description": "Update the specified resource in storage.",
+                "operationId": "adminUpdateDoctorProfile",
+                "parameters": [
+                    {
+                        "name": "profile",
+                        "in": "path",
+                        "description": "Doctor profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDoctorProfileAdminRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated doctor profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorProfile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/doctor/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new doctor",
+                "description": "Register a doctor account. The account is created with a 'pending' status and cannot access the panel until approved by an admin.",
+                "operationId": "registerDoctor",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DoctorRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Doctor registered (pending approval)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RegisterResponse"
+                                }
+                            }
+                        }
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationError"
                     }
                 }
             }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "description": "Authenticate a user (admin, doctor or patient) and issue a Sanctum token.",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "User credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                }
+            }
+        },
+        "/api/v1/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new patient (regular user)",
+                "description": "Create a regular user account with the 'patient' role. No approval is required - the user is logged in immediately.",
+                "operationId": "registerPatient",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatientRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Patient registered and logged in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PatientRegisterResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                }
+            }
+        },
+        "/api/v1/doctor/appointment": {
+            "get": {
+                "tags": [
+                    "Doctor"
+                ],
+                "summary": "View own appointments",
+                "description": "Display a listing of the resource.",
+                "operationId": "doctorListAppointments",
+                "responses": {
+                    "200": {
+                        "description": "List of appointments",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Appointment"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/doctor/appointment/{appointment}": {
+            "patch": {
+                "tags": [
+                    "Doctor"
+                ],
+                "summary": "Approve / cancel an appointment",
+                "description": "Change an appointment's status. Use 'approved' to approve or 'canceled' to cancel.",
+                "operationId": "doctorUpdateAppointmentStatus",
+                "parameters": [
+                    {
+                        "name": "appointment",
+                        "in": "path",
+                        "description": "Appointment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAppointmentStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated appointment",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Appointment"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/doctor/profile/{profile}": {
+            "get": {
+                "tags": [
+                    "Doctor"
+                ],
+                "summary": "View own doctor profile",
+                "operationId": "doctorShowProfile",
+                "parameters": [
+                    {
+                        "name": "profile",
+                        "in": "path",
+                        "description": "Doctor profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Doctor profile with user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorProfileDetail"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Doctor"
+                ],
+                "summary": "Complete / update own profile",
+                "operationId": "doctorUpdateProfile",
+                "parameters": [
+                    {
+                        "name": "profile",
+                        "in": "path",
+                        "description": "Doctor profile ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDoctorProfileRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated doctor profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DoctorProfileDetail"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/hello": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "API root / health check",
+                "description": "Returns a simple greeting to confirm the API is up.",
+                "operationId": "hello",
+                "responses": {
+                    "200": {
+                        "description": "Hello message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hello API V1"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/test": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Authenticated test endpoint",
+                "description": "Returns a plain \"hello\" string. Used to verify Sanctum authentication is working.",
+                "operationId": "test",
+                "responses": {
+                    "200": {
+                        "description": "Test response",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "hello"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/patient/appointment": {
+            "get": {
+                "tags": [
+                    "Patient"
+                ],
+                "summary": "View approved (active) doctors",
+                "operationId": "patientListActiveDoctors",
+                "responses": {
+                    "200": {
+                        "description": "List of active doctors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DoctorProfileFull"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Patient"
+                ],
+                "summary": "Book an appointment",
+                "operationId": "patientBookAppointment",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatientAppointmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Appointment booked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookAppointmentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "DoctorStatus": {
+                "description": "Doctor profile status",
+                "type": "string",
+                "enum": [
+                    "pending",
+                    "active",
+                    "rejected",
+                    "suspended",
+                    "vacation",
+                    "archived"
+                ]
+            },
+            "AppointmentStatus": {
+                "description": "Appointment status",
+                "type": "string",
+                "enum": [
+                    "pending",
+                    "approved",
+                    "canceled"
+                ]
+            },
             "LoginRequest": {
                 "required": [
                     "email",
@@ -53,29 +800,479 @@
                 "properties": {
                     "email": {
                         "type": "string",
+                        "format": "email",
+                        "example": "admin@test.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "DoctorRegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Dr. John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
                         "example": "doctor@example.com"
                     },
                     "password": {
                         "type": "string",
+                        "format": "password",
+                        "example": "secret123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret123"
+                    },
+                    "specialty_id": {
+                        "description": "Optional specialty ID",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "PatientRegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Jane Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "patient@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
                         "example": "secret123"
                     }
                 },
                 "type": "object"
             },
-            "AppointmentRequest": {
+            "PatientAppointmentRequest": {
                 "required": [
                     "doctor_id",
-                    "date"
+                    "appointment_date",
+                    "appointment_time"
                 ],
                 "properties": {
                     "doctor_id": {
+                        "description": "Doctor profile ID",
                         "type": "integer",
                         "example": 1
                     },
-                    "date": {
+                    "appointment_date": {
                         "type": "string",
                         "format": "date",
-                        "example": "2026-06-01"
+                        "example": "2026-08-20"
+                    },
+                    "appointment_time": {
+                        "type": "string",
+                        "example": "14:30"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Sore throat and fever",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDoctorStatusRequest": {
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/DoctorStatus"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateAppointmentStatusRequest": {
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/AppointmentStatus"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDoctorProfileRequest": {
+                "properties": {
+                    "specialty_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "image": {
+                        "description": "Image path or URL",
+                        "type": "string",
+                        "example": "doctors/avatar.jpg"
+                    },
+                    "bio": {
+                        "type": "string",
+                        "example": "Experienced cardiologist with 10+ years."
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "+989123456789"
+                    },
+                    "medical_code": {
+                        "type": "string",
+                        "example": "MC-12345"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Tehran, Valiasr St."
+                    },
+                    "working_hours": {
+                        "type": "string",
+                        "example": "Sat-Wed 9:00-17:00"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateDoctorProfileAdminRequest": {
+                "properties": {
+                    "specialty_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/DoctorStatus"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "doctors/avatar.jpg"
+                    },
+                    "bio": {
+                        "type": "string",
+                        "example": "Updated biography."
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Admin User"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@test.com"
+                    }
+                },
+                "type": "object"
+            },
+            "Specialty": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Cardiology"
+                    }
+                },
+                "type": "object"
+            },
+            "DoctorProfile": {
+                "properties": {
+                    "profile_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "specialty_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/DoctorStatus"
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "example": "doctors/avatar.jpg",
+                        "nullable": true
+                    },
+                    "bio": {
+                        "type": "string",
+                        "example": "Experienced cardiologist.",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "DoctorProfileFull": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "specialty_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/DoctorStatus"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "doctors/avatar.jpg",
+                        "nullable": true
+                    },
+                    "bio": {
+                        "type": "string",
+                        "example": "Experienced cardiologist.",
+                        "nullable": true
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "+989123456789",
+                        "nullable": true
+                    },
+                    "medical_code": {
+                        "type": "string",
+                        "example": "MC-12345",
+                        "nullable": true
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Tehran, Valiasr St.",
+                        "nullable": true
+                    },
+                    "working_hours": {
+                        "type": "string",
+                        "example": "Sat-Wed 9:00-17:00",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "DoctorProfileDetail": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/DoctorProfileFull"
+                    },
+                    {
+                        "properties": {
+                            "user": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "Appointment": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "description": "Patient user ID",
+                        "type": "integer",
+                        "example": 10,
+                        "nullable": true
+                    },
+                    "doctor_id": {
+                        "description": "Doctor profile ID",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "appointment_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-08-20"
+                    },
+                    "appointment_time": {
+                        "type": "string",
+                        "example": "14:30:00"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Sore throat and fever",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/AppointmentStatus"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "DoctorManagementItem": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Dr. John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "doctor@example.com"
+                    },
+                    "profile": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DoctorProfile"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedDoctorProfile": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DoctorProfile"
+                        }
+                    },
+                    "links": {
+                        "type": "object",
+                        "example": {
+                            "first": null,
+                            "last": null,
+                            "prev": null,
+                            "next": null
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "example": {
+                            "current_page": 1,
+                            "per_page": 15,
+                            "total": 15
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "LoginResponse": {
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                        "type": "string",
+                        "example": "1|abcdef123456"
+                    }
+                },
+                "type": "object"
+            },
+            "PatientRegisterResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Registration successful."
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "token": {
+                        "type": "string",
+                        "example": "1|abcdef123456"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Doctor registered successfully. Account is pending admin approval."
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "doctor_profile": {
+                        "$ref": "#/components/schemas/DoctorProfileFull"
+                    }
+                },
+                "type": "object"
+            },
+            "BookAppointmentResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Appointment booked successfully."
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/Appointment"
                     }
                 },
                 "type": "object"
@@ -83,14 +1280,30 @@
         },
         "responses": {
             "Unauthorized": {
-                "description": "Unauthenticated",
+                "description": "Unauthenticated - missing or invalid token.",
                 "content": {
                     "application/json": {
                         "schema": {
                             "properties": {
                                 "message": {
                                     "type": "string",
-                                    "example": "Unauthenticated"
+                                    "example": "Unauthenticated."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "Forbidden - the authenticated user does not have the required role/permission.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthorized action."
                                 }
                             },
                             "type": "object"
@@ -99,14 +1312,14 @@
                 }
             },
             "NotFound": {
-                "description": "Not found",
+                "description": "Resource not found.",
                 "content": {
                     "application/json": {
                         "schema": {
                             "properties": {
                                 "message": {
                                     "type": "string",
-                                    "example": "Not found"
+                                    "example": "No query results for model."
                                 }
                             },
                             "type": "object"
@@ -115,13 +1328,22 @@
                 }
             },
             "ValidationError": {
-                "description": "Validation failed",
+                "description": "Validation failed.",
                 "content": {
                     "application/json": {
                         "schema": {
                             "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "The given data was invalid."
+                                },
                                 "errors": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "example": {
+                                        "email": [
+                                            "The email field is required."
+                                        ]
+                                    }
                                 }
                             },
                             "type": "object"
@@ -133,7 +1355,7 @@
         "securitySchemes": {
             "sanctum": {
                 "type": "http",
-                "description": "Enter token from /api/v1/login response",
+                "description": "Laravel Sanctum token. Enter the token returned by /api/v1/login in the format \"Bearer <token>\".",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
             }
@@ -142,7 +1364,23 @@
     "tags": [
         {
             "name": "Auth",
-            "description": "Auth"
+            "description": "Authentication and registration"
+        },
+        {
+            "name": "Admin",
+            "description": "Management (admin) operations"
+        },
+        {
+            "name": "Doctor",
+            "description": "Doctor operations"
+        },
+        {
+            "name": "Patient",
+            "description": "Regular user (patient) operations"
+        },
+        {
+            "name": "General",
+            "description": "Utility and health-check endpoints"
         }
     ]
 }

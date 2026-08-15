@@ -25,17 +25,23 @@ class RolesAndPermissionsSeeder extends Seeder
             'specialty.update',
             'specialty.delete',
 
-            // doctor
+            // doctor management
             'doctor.view',
             'doctor.pending',
+            'doctor.rejected',
             'doctor.suspended',
             'doctor.disable',
 
+            // doctor profile
+            'doctor.update',
+            'profile.view',
+            'profile.update',
+
             // appointment
             'appointment.view',
-            'appointment.create',
             'appointment.pending',
             'appointment.cancel',
+            'appointment.create',
         ];
 
         foreach ($permissions as $permission) {
@@ -73,6 +79,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // doctor permissions
         $doctor->givePermissionTo([
+            'profile.view',
+            'profile.update',
             'appointment.view',
             'appointment.pending',
             'appointment.cancel',
@@ -80,6 +88,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // patient permissions
         $patient->givePermissionTo([
+            'doctor.view',
             'appointment.create',
         ]);
     }

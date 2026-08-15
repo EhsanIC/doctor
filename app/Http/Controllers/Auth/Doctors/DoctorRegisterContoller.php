@@ -8,10 +8,25 @@ use App\Models\DoctorProfile;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
+use OpenApi\Attributes as OA;
 
 class DoctorRegisterContoller extends Controller
 {
+    #[OA\Post(
+        path: '/api/v1/doctor/register',
+        operationId: 'registerDoctor',
+        summary: 'Register a new doctor',
+        description: "Register a doctor account. The account is created with a 'pending' status and cannot access the panel until approved by an admin.",
+        tags: ['Auth'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/DoctorRegisterRequest')
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Doctor registered (pending approval)', content: new OA\JsonContent(ref: '#/components/schemas/RegisterResponse')),
+            new OA\Response(response: 422, ref: '#/components/responses/ValidationError'),
+        ]
+    )]
     public function registerDoctor(DoctorRegsiterRequest $request)
     {
         // dd('test');
@@ -22,17 +37,7 @@ class DoctorRegisterContoller extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $user->assignRole('admin');
-
-
-        // // 3. اختصاص نقش 'doctor' به کاربر
-        // // ابتدا مطمئن شو که نقش 'doctor' وجود دارد، اگر نه آن را ایجاد کن
-        // $doctorRole = Role::findByName('doctor');
-        // if (!$doctorRole) {
-        //     // اگر نقش doctor وجود ندارد، آن را ایجاد کن
-        //     $doctorRole = Role::create(['name' => 'doctor']);
-        // }
-        // $user->assignRole($doctorRole); // اختصاص نقش doctor
+        $user->assignRole('doctor');
 
         // 4. ایجاد پروفایل پزشک
         $doctorProfile = DoctorProfile::create([

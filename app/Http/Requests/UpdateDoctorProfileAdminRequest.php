@@ -25,7 +25,7 @@ class UpdateDoctorProfileAdminRequest extends FormRequest
     {
         return [
             'specialty_id' => 'sometimes|exists:specialties,id',
-            'status' => 'sometimes|in:pending,active,suspended,vacation,archived',
+            'status' => 'sometimes|in:pending,active,rejected,suspended,vacation,archived',
             'image' => 'sometimes|string|max:255',
             'bio' => 'sometimes|string|max:2000'
         ];

@@ -3,11 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\DoctorProfile;
-use App\Models\Specialty;
 use App\Models\User;
-use Database\Factories\DoctorProfileFactory;
-use Database\Factories\specialtyFactory;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class CreateUsersWithRolesSeeder extends Seeder
 {
@@ -15,36 +13,57 @@ class CreateUsersWithRolesSeeder extends Seeder
     {
         /*
         |--------------------------------------------------------------------------
-        | Admin
+        | Default Admin
         |--------------------------------------------------------------------------
         */
-
-        $admin = User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@test.com',
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@test.com'],
+            ['name' => 'Admin User', 'password' => Hash::make('password')],
+        );
 
         $admin->assignRole('admin');
 
         /*
         |--------------------------------------------------------------------------
-        | Doctors
+        | Default Doctor
         |--------------------------------------------------------------------------
         */
+        $doctor = User::firstOrCreate(
+            ['email' => 'doctor@test.com'],
+            ['name' => 'Doctor User', 'password' => Hash::make('password')],
+        );
 
+        $doctor->assignRole('doctor');
+
+        DoctorProfile::firstOrCreate(
+            ['user_id' => $doctor->id],
+            ['status' => 'active'],
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Default Patient
+        |--------------------------------------------------------------------------
+        */
+        $patient = User::firstOrCreate(
+            ['email' => 'patient@test.com'],
+            ['name' => 'Patient User', 'password' => Hash::make('password')],
+        );
+
+        $patient->assignRole('patient');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sample data (random users)
+        |--------------------------------------------------------------------------
+        */
         $doctors = User::factory(3)
-        ->has(DoctorProfile::factory())
-        ->create();
+            ->has(DoctorProfile::factory())
+            ->create();
 
         foreach ($doctors as $doctor) {
             $doctor->assignRole('doctor');
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Patients
-        |--------------------------------------------------------------------------
-        */
 
         $patients = User::factory(10)->create();
 

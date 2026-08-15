@@ -14,16 +14,21 @@ class LoginController extends Controller
 
     #[OA\Post(
         path: '/api/v1/login',
+        operationId: 'login',
         summary: 'Login',
+        description: 'Authenticate a user (admin, doctor or patient) and issue a Sanctum token.',
         tags: ['Auth'],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: '#/components/schemas/LoginRequest',
-            example: ['email' => 'admin@test.com', 'password' => 'password'] )  // reuse schema
+            description: 'User credentials',
+            content: new OA\JsonContent(ref: '#/components/schemas/LoginRequest')
         ),
         responses: [
-            new OA\Response(response: 200, description: 'Success'),
-            new OA\Response(response: 422, ref: '#/components/responses/ValidationError'), // reuse response
+            new OA\Response(response: 200, description: 'Login successful', content: new OA\JsonContent(ref: '#/components/schemas/LoginResponse')),
+            new OA\Response(response: 401, description: 'Invalid credentials', content: new OA\JsonContent(
+                properties: [new OA\Property(property: 'message', type: 'string', example: 'Invalid credentials.')]
+            )),
+            new OA\Response(response: 422, ref: '#/components/responses/ValidationError'),
         ]
     )]
     

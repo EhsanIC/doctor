@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\DoctorProfile;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class DoctorProfilePolicy
 {
@@ -21,7 +20,7 @@ class DoctorProfilePolicy
      */
     public function view(User $user, DoctorProfile $doctorProfile): bool
     {
-        return $user && $user->hasRole('doctor') && $user->id === $doctorProfile->user_id;
+        return $user->id === $doctorProfile->user_id;
     }
 
     /**
@@ -37,7 +36,7 @@ class DoctorProfilePolicy
      */
     public function update(User $user, DoctorProfile $doctorProfile): bool
     {
-        return $user && $user->hasRole('doctor') && $user->id === $doctorProfile->user_id;
+        return $user->id === $doctorProfile->user_id;
     }
 
     /**
