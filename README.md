@@ -19,8 +19,7 @@ Doctor Management
 
 - View list of doctors
 - Approve doctor
-- Reject doctor
-- Deactivate doctor
+- Disable doctor
 
 Doctor Profile Editing
 

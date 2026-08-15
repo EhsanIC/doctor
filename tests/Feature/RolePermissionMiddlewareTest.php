@@ -209,3 +209,12 @@ test('doctor cannot update another doctors appointment', function () {
 
     expect($appointment->fresh()->status->value)->toBe('pending');
 });
+
+test('doctor with pending or disabled status cannot access the panel', function (string $status) {
+    $doctor = make_user_with_role('doctor');
+    DoctorProfile::factory()->create(['user_id' => $doctor->id, 'status' => $status]);
+
+    Sanctum::actingAs($doctor);
+
+    $this->getJson('/api/v1/doctor/appointment')->assertForbidden();
+})->with(['pending', 'disabled']);

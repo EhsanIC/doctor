@@ -24,8 +24,7 @@ class UpdateDoctorProfileRequest extends FormRequest
     {
         return [
             'specialty_id' => 'sometimes|required|integer|exists:specialties,id',
-            'status' => 'sometimes|required|in:active,inactive,pending', // مثال: فقط مقادیر مجاز
-            'image' => 'sometimes|required|string|max:255', // مسیر تصویر یا URL
+            'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'bio' => 'sometimes|required|string',
             'mobile' => 'sometimes|required|string|max:20',
             'medical_code' => 'sometimes|required|string|max:50',

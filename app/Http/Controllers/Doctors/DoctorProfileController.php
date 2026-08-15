@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateDoctorProfileRequest;
 use App\Models\DoctorProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use OpenApi\Attributes as OA;
 
 class DoctorProfileController extends Controller
@@ -44,7 +45,10 @@ class DoctorProfileController extends Controller
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: '#/components/schemas/UpdateDoctorProfileRequest')
+            content: new OA\MediaType(
+                mediaType: 'multipart/form-data',
+                schema: new OA\Schema(ref: '#/components/schemas/UpdateDoctorProfileRequest')
+            )
         ),
         responses: [
             new OA\Response(response: 200, description: 'Updated doctor profile', content: new OA\JsonContent(ref: '#/components/schemas/DoctorProfileDetail')),
@@ -56,7 +60,18 @@ class DoctorProfileController extends Controller
     )]
     public function update(UpdateDoctorProfileRequest $request , DoctorProfile $profile) 
     {
-        $profile->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            if ($profile->image) {
+                Storage::disk('local')->delete($profile->image);
+            }
+
+            $data['image'] = $request->file('image')->store('doctors', 'local');
+        }
+
+        $profile->update($data);
+
         return response()->json($profile->load('user'));
     }
 

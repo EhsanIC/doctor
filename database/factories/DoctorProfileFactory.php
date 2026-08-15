@@ -26,11 +26,9 @@ class DoctorProfileFactory extends Factory
             'specialty_id' => Specialty::inRandomOrder()->first()?->id,
 
             'status' => fake()->randomElement([
-                'pending',       
+                'pending',
                 'active',
-                'suspended',  
-                'vacation',
-                'archived',
+                'disabled',
             ]),
 
             'image' => fake()->imageUrl(),

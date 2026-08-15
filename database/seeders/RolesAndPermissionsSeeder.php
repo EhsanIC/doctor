@@ -28,8 +28,6 @@ class RolesAndPermissionsSeeder extends Seeder
             // doctor management
             'doctor.view',
             'doctor.pending',
-            'doctor.rejected',
-            'doctor.suspended',
             'doctor.disable',
 
             // doctor profile

@@ -23,9 +23,8 @@
 [x] View list of doctors   -> GET /api/v1/admin/doctors (AdminPanelDoctorManagement@index)
                               NOTE: uses ->get() (no pagination)
 [~] Approve doctor         -> via generic status update (set status = active)
-[~] Reject doctor          -> via generic status update (status = rejected; 'rejected' is in enum)
-[~] Deactivate doctor      -> via generic status update (set status = suspended)
-    -> All three are handled by a single endpoint:
+[~] Disable doctor         -> via generic status update (set status = disabled)
+    -> Handled by a single endpoint:
        PUT/PATCH /api/v1/admin/doctors/{doctor} (UpdateDoctorStatusRequest)
 
 --- Doctor Profile Editing (by admin) -------------------------------------------
@@ -42,7 +41,7 @@
 [x] Register               -> POST /api/v1/doctor/register
 [x] Role assignment        -> assigns 'doctor' role (was 'admin'; fixed)
 [x] Profile created        -> DoctorProfile with status = pending
-[ ] Block panel until approved -> NOT enforced (no middleware/guard rejects a pending doctor)
+[x] Block panel until approved -> EnsureDoctorActive middleware (non-active doctors get 403)
 
 --- Complete Profile ------------------------------------------------------------
 [x] View own profile       -> GET /api/v1/doctor/profile/{profile} (policy: view + permission:profile.view)
@@ -69,8 +68,7 @@
  5. TECHNICAL REQUIREMENTS
 ================================================================================
 [~]  1. Full form validation    FormRequests exist for most endpoints; login uses
-                                 inline validate(); doctor status rule uses
-                                 in:active,inactive,pending (mismatches DoctorStatus enum)
+                                 inline validate()
 [x]  2. Access control          Spatie permission + role middleware + policy applied consistently
                                  (admin=role:admin, doctor/patient=permission middleware)
 [x]  3. Middleware & Policy     Spatie built-in RoleMiddleware/PermissionMiddleware + DoctorProfilePolicy
@@ -79,7 +77,7 @@
 [x]  6. Eloquent relations      Defined on all models (Appointment->doctorProfile FK fixed)
 [~]  7. Eager loading           Partial: admin doctor list (with) + profile show (load) only
 [~]  8. Pagination              Only admin profile index paginates
-[ ]  9. Secure file/image upload Image is stored as a string; no storage, mime/size validation
+[x]  9. Secure file/image upload Doctor profile image upload (local disk, mimes + 2MB max)
 [ ] 10. Service/Repository      No Services or Repositories directories exist
 [x] 11. Migrations              All tables migrated (users, specialties, doctor_profiles,
                                  appointments, permission tables, tokens)
@@ -89,7 +87,7 @@
 [x] 15. Security best practices Register assigns 'doctor' role; patient routes authenticated
 [~] 16. Route structure         /doctor/doctor duplication fixed; empty apiResource('') name remains
 [~] 17. Query optimization      Partial eager loading (doctor appointments now filtered by doctor_id)
-[x] 18. Enums for statuses      AppointmentStatus + DoctorStatus enums (incl. 'rejected'), cast in models
+[x] 18. Enums for statuses      AppointmentStatus + DoctorStatus (pending/active/disabled), cast in models
 [x] 19. Soft delete             Specialty, DoctorProfile + Appointment all use SoftDeletes
 [x] 20. README documentation    README rewritten with full spec
 [~] 21. Maintainable code       Partially
@@ -106,8 +104,7 @@
 6. AdminPanelDoctorManagement / AdminPanelDoctorProfileController import
    PhpParser\Comment\Doc (unused leftover).
 7. LoginController returns HTTP 201 instead of 200 for successful login.
-8. UpdateDoctorProfileRequest status rule is in:active,inactive,pending but the
-   DoctorStatus enum values are pending/active/rejected/suspended/vacation/archived.
+8. [FIXED] Removed 'status' from UpdateDoctorProfileRequest (doctor can't self-set status).
 9. [FIXED] Route prefix '/doctor/doctor/...' duplication (now /api/v1/doctor/...).
 10. Tests: AdminLoginTest fixed (now posts /api/v1/login); NewExampleTest is still a
     placeholder ('nigga').
@@ -122,14 +119,14 @@
 [x] Add auth:sanctum to patient POST (and fix patient GET guard)
 [x] Add permission middleware to doctor profile/appointment routes
 [x] Fix/expand tests (login path, role/permission middleware, register coverage)
-[~] Add 'rejected' status (enum + admin validation + seeder permission done)
+[x] Simplify doctor statuses to pending/active/disabled
 [x] Complete Swagger docs for all implemented endpoints
 [x] Fix doctor appointment filter + ownership (use doctor_id / doctor profile)
 [x] Fix Appointment->doctorProfile() foreign key (doctor_id)
 [x] Add SoftDeletes trait to DoctorProfile + Appointment models
-[ ] Enforce "pending doctor cannot access panel" (middleware/guard)  <-- NEXT
-[ ] Real image file upload (store file, validate mime/size, return URL)
-[ ] Service/Repository layer (refactor controllers)
+[x] Enforce "pending doctor cannot access panel" (EnsureDoctorActive middleware)
+[x] Real image file upload (store file, validate mime/size)
+[ ] Service/Repository layer (refactor controllers)  <-- NEXT
 [ ] Add pagination + eager loading to patient doctor list & doctor appointments
 [ ] Add logout endpoint
 [ ] Make git commits clean/organized + push to GitHub repo "doctor"

@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 | Enums
 |--------------------------------------------------------------------------
 */
-#[OA\Schema(schema: 'DoctorStatus', type: 'string', enum: ['pending', 'active', 'rejected', 'suspended', 'vacation', 'archived'], description: 'Doctor profile status')]
+#[OA\Schema(schema: 'DoctorStatus', type: 'string', enum: ['pending', 'active', 'disabled'], description: 'Doctor profile status')]
 #[OA\Schema(schema: 'AppointmentStatus', type: 'string', enum: ['pending', 'approved', 'canceled'], description: 'Appointment status')]
 
 /*
@@ -53,7 +53,7 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(schema: 'UpdateDoctorProfileRequest', properties: [
     new OA\Property(property: 'specialty_id', type: 'integer', example: 2),
-    new OA\Property(property: 'image', type: 'string', example: 'doctors/avatar.jpg', description: 'Image path or URL'),
+    new OA\Property(property: 'image', type: 'string', format: 'binary', description: 'Image file (jpeg, png, jpg, webp; max 2MB)'),
     new OA\Property(property: 'bio', type: 'string', example: 'Experienced cardiologist with 10+ years.'),
     new OA\Property(property: 'mobile', type: 'string', example: '+989123456789'),
     new OA\Property(property: 'medical_code', type: 'string', example: 'MC-12345'),

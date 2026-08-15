@@ -115,7 +115,7 @@
                     "Admin"
                 ],
                 "summary": "Approve / reject / deactivate a doctor",
-                "description": "Change a doctor's status. Use 'active' to approve, 'suspended' to deactivate.",
+                "description": "Change a doctor's status. Use 'active' to approve or 'disabled' to disable.",
                 "operationId": "adminUpdateDoctorStatus",
                 "parameters": [
                     {
@@ -876,7 +876,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/UpdateDoctorProfileRequest"
                             }
@@ -1054,10 +1054,7 @@
                 "enum": [
                     "pending",
                     "active",
-                    "rejected",
-                    "suspended",
-                    "vacation",
-                    "archived"
+                    "disabled"
                 ]
             },
             "AppointmentStatus": {
@@ -1212,9 +1209,9 @@
                         "example": 2
                     },
                     "image": {
-                        "description": "Image path or URL",
+                        "description": "Image file (jpeg, png, jpg, webp; max 2MB)",
                         "type": "string",
-                        "example": "doctors/avatar.jpg"
+                        "format": "binary"
                     },
                     "bio": {
                         "type": "string",

@@ -48,7 +48,7 @@ class AdminPanelDoctorManagement extends Controller
         path: '/api/v1/admin/doctors/{doctor}',
         operationId: 'adminUpdateDoctorStatus',
         summary: 'Approve / reject / deactivate a doctor',
-        description: "Change a doctor's status. Use 'active' to approve, 'suspended' to deactivate.",
+        description: "Change a doctor's status. Use 'active' to approve or 'disabled' to disable.",
         tags: ['Admin'],
         security: [['sanctum' => []]],
         parameters: [

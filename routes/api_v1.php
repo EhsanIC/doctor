@@ -29,7 +29,7 @@ Route::apiResource('admin/specialties', SpecialtyController::class)
 // INFO: routes for doctor role
 Route::post('/doctor/register' , [DoctorRegisterContoller::class , 'registerDoctor']);
 
-Route::prefix('/doctor')->middleware('auth:sanctum')->group(function() {
+Route::prefix('/doctor')->middleware(['auth:sanctum', 'doctor.active'])->group(function() {
 
     // INFO: doctor profile
     Route::get('/profile/{profile}' , [DoctorProfileController::class , 'show'])
