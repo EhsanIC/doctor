@@ -29,7 +29,9 @@ class DoctorAppointmentController extends Controller
     )]
     public function index()
     {
-        return Appointment::where('user_id' , auth()->id())->get();
+        $doctorProfile = auth()->user()->doctorProfile;
+
+        return Appointment::where('doctor_id', $doctorProfile?->id)->get();
     }
 
     /**
@@ -75,12 +77,13 @@ class DoctorAppointmentController extends Controller
     )]
     public function update(UpdatingAppointmentStatusByDoctorRequest $request, Appointment $appointment)
     {
-        if (auth()->id() === $appointment->user_id) {
-            
-            $data = $request->validated();
-            $appointment->update($data);
+        $doctorProfile = auth()->user()->doctorProfile;
 
+        if (! $doctorProfile || $doctorProfile->id !== $appointment->doctor_id) {
+            abort(403, 'Unauthorized action.');
         }
+
+        $appointment->update($request->validated());
 
         return response()->json($appointment->fresh());
     }

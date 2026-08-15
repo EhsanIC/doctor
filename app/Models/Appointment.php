@@ -33,6 +33,6 @@ class Appointment extends Model
 
     public function doctorProfile(): BelongsTo
     {
-        return $this->belongsTo(DoctorProfile::class);
+        return $this->belongsTo(DoctorProfile::class, 'doctor_id');
     }
 }

@@ -162,3 +162,50 @@ test('doctor can approve or cancel their own appointment', function () {
 
     expect($appointment->fresh()->status->value)->toBe('approved');
 });
+
+test('doctor only sees their own appointments', function () {
+    $doctor = make_user_with_role('doctor');
+    $otherDoctor = make_user_with_role('doctor');
+    $profile = DoctorProfile::factory()->create(['user_id' => $doctor->id, 'status' => 'active']);
+    $otherProfile = DoctorProfile::factory()->create(['user_id' => $otherDoctor->id, 'status' => 'active']);
+
+    $own = Appointment::factory()->create([
+        'user_id' => $doctor->id,
+        'doctor_id' => $profile->id,
+        'status' => 'pending',
+    ]);
+
+    $other = Appointment::factory()->create([
+        'user_id' => $doctor->id,
+        'doctor_id' => $otherProfile->id,
+        'status' => 'pending',
+    ]);
+
+    Sanctum::actingAs($doctor);
+
+    $this->getJson('/api/v1/doctor/appointment')
+        ->assertOk()
+        ->assertJsonCount(1)
+        ->assertJsonFragment(['id' => $own->id])
+        ->assertJsonMissing(['id' => $other->id]);
+});
+
+test('doctor cannot update another doctors appointment', function () {
+    $doctor = make_user_with_role('doctor');
+    $otherDoctor = make_user_with_role('doctor');
+    $profile = DoctorProfile::factory()->create(['user_id' => $doctor->id, 'status' => 'active']);
+    $otherProfile = DoctorProfile::factory()->create(['user_id' => $otherDoctor->id, 'status' => 'active']);
+
+    $appointment = Appointment::factory()->create([
+        'user_id' => $doctor->id,
+        'doctor_id' => $otherProfile->id,
+        'status' => 'pending',
+    ]);
+
+    Sanctum::actingAs($doctor);
+
+    $this->patchJson("/api/v1/doctor/appointment/{$appointment->id}", ['status' => 'approved'])
+        ->assertForbidden();
+
+    expect($appointment->fresh()->status->value)->toBe('pending');
+});

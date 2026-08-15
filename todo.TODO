@@ -55,7 +55,7 @@
 [x] View appointments      -> GET /api/v1/doctor/appointment (permission:appointment.view)
 [x] Approve appointment    -> PATCH /api/v1/doctor/appointment/{appointment} (permission:appointment.pending|cancel)
 [x] Cancel appointment     -> same PATCH endpoint (status = canceled)
-    -> BUG: filters/checks by user_id (patient) instead of doctor_id (see bugs)
+    -> ownership enforced via doctor_id (403 for non-owner)
 
 ================================================================================
  4. REGULAR USER (PATIENT) CAPABILITIES
@@ -76,8 +76,7 @@
 [x]  3. Middleware & Policy     Spatie built-in RoleMiddleware/PermissionMiddleware + DoctorProfilePolicy
 [~]  4. Clean architecture      Logic lives in controllers; no service/repository layer
 [~]  5. SOLID principles        Partially followed
-[x]  6. Eloquent relations      Defined on all models, BUT Appointment->doctorProfile()
-                                 foreign key is broken (looks for doctor_profile_id)
+[x]  6. Eloquent relations      Defined on all models (Appointment->doctorProfile FK fixed)
 [~]  7. Eager loading           Partial: admin doctor list (with) + profile show (load) only
 [~]  8. Pagination              Only admin profile index paginates
 [ ]  9. Secure file/image upload Image is stored as a string; no storage, mime/size validation
@@ -89,7 +88,7 @@
 [~] 14. DRY                     Some duplication remains
 [x] 15. Security best practices Register assigns 'doctor' role; patient routes authenticated
 [~] 16. Route structure         /doctor/doctor duplication fixed; empty apiResource('') name remains
-[~] 17. Query optimization      Partial eager loading; doctor appointments filtered by wrong column
+[~] 17. Query optimization      Partial eager loading (doctor appointments now filtered by doctor_id)
 [x] 18. Enums for statuses      AppointmentStatus + DoctorStatus enums (incl. 'rejected'), cast in models
 [~] 19. Soft delete             Specialty uses SoftDeletes; DoctorProfile + Appointment
                                  still missing the trait (columns exist)
@@ -101,12 +100,9 @@
 ================================================================================
 1. [FIXED] DoctorRegisterContoller assigned role 'admin' instead of 'doctor'.
 2. [FIXED] Patient "book appointment" POST route had no auth middleware (now auth:sanctum).
-3. DoctorAppointmentController filters appointments by user_id (patient), but a
-   doctor's appointments are stored under doctor_id (doctor_profiles.id).
-   -> doctor sees wrong appointments; ownership check compares auth()->id() to
-      appointment->user_id (patient), so approve/cancel authorization is wrong.
-4. Appointment model: doctorProfile() relation has no explicit foreign key, so
-   Laravel looks for doctor_profile_id (column is doctor_id). Relationship is broken.
+3. [FIXED] DoctorAppointmentController now filters by doctor_id and enforces
+   ownership (403 for non-owner).
+4. [FIXED] Appointment->doctorProfile() now uses doctor_id foreign key.
 5. DoctorProfile and Appointment models do NOT use the SoftDeletes trait even though
    migrations add softDeletes() columns.
 6. AdminPanelDoctorManagement / AdminPanelDoctorProfileController import
@@ -130,9 +126,9 @@
 [x] Fix/expand tests (login path, role/permission middleware, register coverage)
 [~] Add 'rejected' status (enum + admin validation + seeder permission done)
 [x] Complete Swagger docs for all implemented endpoints
-[ ] Fix doctor appointment filter + ownership (use doctor_id / doctor profile)  <-- NEXT
-[ ] Fix Appointment->doctorProfile() foreign key (doctor_id)
-[ ] Add SoftDeletes trait to DoctorProfile + Appointment models
+[x] Fix doctor appointment filter + ownership (use doctor_id / doctor profile)
+[x] Fix Appointment->doctorProfile() foreign key (doctor_id)
+[ ] Add SoftDeletes trait to DoctorProfile + Appointment models  <-- NEXT
 [ ] Enforce "pending doctor cannot access panel" (middleware/guard)
 [ ] Real image file upload (store file, validate mime/size, return URL)
 [ ] Service/Repository layer (refactor controllers)
