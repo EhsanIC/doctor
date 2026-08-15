@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminPanelDoctorManagement;
 use App\Http\Controllers\Admin\AdminPanelDoctorProfileController;
+use App\Http\Controllers\Admin\SpecialtyController;
 use App\Http\Controllers\Auth\Doctors\DoctorRegisterContoller;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PatientRegisterController;
@@ -19,6 +20,10 @@ Route::prefix('/admin/doctors')->middleware('auth:sanctum' , 'role:admin')->grou
     Route::apiResource('', AdminPanelDoctorManagement::class)->only(['index' , 'update']);
     Route::apiResource('/profile' , AdminPanelDoctorProfileController::class)->only(['index' , 'update']);
 });
+
+// INFO: specialty management (admin only)
+Route::apiResource('admin/specialties', SpecialtyController::class)
+    ->middleware(['auth:sanctum', 'role:admin']);
 
 
 // INFO: routes for doctor role

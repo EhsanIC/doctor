@@ -15,9 +15,9 @@
  2. ADMIN CAPABILITIES
 ================================================================================
 --- Specialty Management --------------------------------------------------------
-[ ] Add specialty          -> NO controller/routes (model + migration + seeder only)
-[ ] Edit specialty         -> NOT implemented
-[ ] Delete specialty       -> NOT implemented
+[x] Add specialty          -> POST /api/v1/admin/specialties (SpecialtyController@store)
+[x] Edit specialty         -> PUT/PATCH /api/v1/admin/specialties/{specialty}
+[x] Delete specialty       -> DELETE /api/v1/admin/specialties/{specialty} (soft delete)
 
 --- Doctor Management -----------------------------------------------------------
 [x] View list of doctors   -> GET /api/v1/admin/doctors (AdminPanelDoctorManagement@index)
@@ -91,8 +91,8 @@
 [~] 16. Route structure         /doctor/doctor duplication fixed; empty apiResource('') name remains
 [~] 17. Query optimization      Partial eager loading; doctor appointments filtered by wrong column
 [x] 18. Enums for statuses      AppointmentStatus + DoctorStatus enums (incl. 'rejected'), cast in models
-[~] 19. Soft delete             softDeletes() columns exist, but models are MISSING the
-                                 SoftDeletes trait -> soft delete NOT functional
+[~] 19. Soft delete             Specialty uses SoftDeletes; DoctorProfile + Appointment
+                                 still missing the trait (columns exist)
 [x] 20. README documentation    README rewritten with full spec
 [~] 21. Maintainable code       Partially
 
@@ -123,14 +123,14 @@
 ================================================================================
  7. NOT IMPLEMENTED / NEXT STEPS (prioritized)
 ================================================================================
-[ ] Specialty CRUD: controller + routes + request + resource (admin only)   <-- NEXT
+[x] Specialty CRUD: controller + routes + request + resource (admin only)
 [x] Fix doctor register role assignment (doctor, not admin)
 [x] Add auth:sanctum to patient POST (and fix patient GET guard)
 [x] Add permission middleware to doctor profile/appointment routes
 [x] Fix/expand tests (login path, role/permission middleware, register coverage)
 [~] Add 'rejected' status (enum + admin validation + seeder permission done)
 [x] Complete Swagger docs for all implemented endpoints
-[ ] Fix doctor appointment filter + ownership (use doctor_id / doctor profile)
+[ ] Fix doctor appointment filter + ownership (use doctor_id / doctor profile)  <-- NEXT
 [ ] Fix Appointment->doctorProfile() foreign key (doctor_id)
 [ ] Add SoftDeletes trait to DoctorProfile + Appointment models
 [ ] Enforce "pending doctor cannot access panel" (middleware/guard)

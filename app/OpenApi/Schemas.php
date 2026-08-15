@@ -68,6 +68,14 @@ use OpenApi\Attributes as OA;
     new OA\Property(property: 'bio', type: 'string', example: 'Updated biography.'),
 ])]
 
+#[OA\Schema(schema: 'StoreSpecialtyRequest', required: ['name'], properties: [
+    new OA\Property(property: 'name', type: 'string', example: 'Cardiology'),
+])]
+
+#[OA\Schema(schema: 'UpdateSpecialtyRequest', required: ['name'], properties: [
+    new OA\Property(property: 'name', type: 'string', example: 'Cardiology'),
+])]
+
 /*
 |--------------------------------------------------------------------------
 | Model / response schemas
@@ -139,6 +147,12 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(schema: 'PaginatedDoctorProfile', properties: [
     new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/DoctorProfile')),
+    new OA\Property(property: 'links', type: 'object', example: ['first' => null, 'last' => null, 'prev' => null, 'next' => null]),
+    new OA\Property(property: 'meta', type: 'object', example: ['current_page' => 1, 'per_page' => 15, 'total' => 15]),
+])]
+
+#[OA\Schema(schema: 'PaginatedSpecialty', properties: [
+    new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/Specialty')),
     new OA\Property(property: 'links', type: 'object', example: ['first' => null, 'last' => null, 'prev' => null, 'next' => null]),
     new OA\Property(property: 'meta', type: 'object', example: ['current_page' => 1, 'per_page' => 15, 'total' => 15]),
 ])]

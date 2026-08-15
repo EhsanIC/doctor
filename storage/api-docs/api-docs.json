@@ -319,6 +319,283 @@
                 ]
             }
         },
+        "/api/v1/admin/specialties": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List all specialties (paginated)",
+                "description": "Display a listing of the resource.",
+                "operationId": "adminListSpecialties",
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of specialties",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedSpecialty"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Add a specialty",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "adminStoreSpecialty",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreSpecialtyRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created specialty",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Specialty"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/specialties/{specialty}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Show a specialty",
+                "description": "Display the specified resource.",
+                "operationId": "adminShowSpecialty",
+                "parameters": [
+                    {
+                        "name": "specialty",
+                        "in": "path",
+                        "description": "Specialty ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Specialty",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Specialty"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Edit a specialty (PUT)",
+                "operationId": "adminUpdateSpecialtyPut",
+                "parameters": [
+                    {
+                        "name": "specialty",
+                        "in": "path",
+                        "description": "Specialty ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSpecialtyRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated specialty",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Specialty"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete a specialty (soft delete)",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "adminDeleteSpecialty",
+                "parameters": [
+                    {
+                        "name": "specialty",
+                        "in": "path",
+                        "description": "Specialty ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Specialty deleted"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Edit a specialty",
+                "description": "Update the specified resource in storage.",
+                "operationId": "adminUpdateSpecialty",
+                "parameters": [
+                    {
+                        "name": "specialty",
+                        "in": "path",
+                        "description": "Specialty ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateSpecialtyRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated specialty",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Specialty"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationError"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/doctor/register": {
             "post": {
                 "tags": [
@@ -982,6 +1259,30 @@
                 },
                 "type": "object"
             },
+            "StoreSpecialtyRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Cardiology"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateSpecialtyRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Cardiology"
+                    }
+                },
+                "type": "object"
+            },
             "User": {
                 "properties": {
                     "id": {
@@ -1200,6 +1501,34 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/DoctorProfile"
+                        }
+                    },
+                    "links": {
+                        "type": "object",
+                        "example": {
+                            "first": null,
+                            "last": null,
+                            "prev": null,
+                            "next": null
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "example": {
+                            "current_page": 1,
+                            "per_page": 15,
+                            "total": 15
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedSpecialty": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Specialty"
                         }
                     },
                     "links": {
