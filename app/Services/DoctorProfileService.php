@@ -28,11 +28,13 @@ class DoctorProfileService
     }
 
     /**
-     * List all active (approved) doctor profiles.
+     * List all active (approved) doctor profiles, paginated and eager loaded.
      */
-    public function listActive(): Collection
+    public function listActive(): LengthAwarePaginator
     {
-        return DoctorProfile::where('status', 'active')->get();
+        return DoctorProfile::with(['user', 'specialty'])
+            ->where('status', 'active')
+            ->paginate();
     }
 
     /**

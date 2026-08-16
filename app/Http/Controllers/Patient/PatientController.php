@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientAppointmentRequest;
+use App\Http\Resources\DoctorProfileFullResource;
 use App\Services\AppointmentService;
 use App\Services\DoctorProfileService;
 use OpenApi\Attributes as OA;
@@ -22,16 +23,13 @@ class PatientController extends Controller
         tags: ['Patient'],
         security: [['sanctum' => []]],
         responses: [
-            new OA\Response(response: 200, description: 'List of active doctors', content: new OA\JsonContent(
-                type: 'array',
-                items: new OA\Items(ref: '#/components/schemas/DoctorProfileFull')
-            )),
+            new OA\Response(response: 200, description: 'Paginated list of active doctors', content: new OA\JsonContent(ref: '#/components/schemas/PaginatedDoctorProfileFull')),
             new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
         ]
     )]
     public function index()
     {
-        return $this->doctorProfileService->listActive();
+        return DoctorProfileFullResource::collection($this->doctorProfileService->listActive());
     }
 
     #[OA\Post(

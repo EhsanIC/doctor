@@ -42,15 +42,18 @@ test('listProfiles returns a paginator', function () {
     expect($result->total())->toBe(3);
 });
 
-test('listActive returns only active doctor profiles', function () {
+test('listActive returns only active doctor profiles, paginated and eager loaded', function () {
     $active = DoctorProfile::factory()->create(['status' => 'active']);
     DoctorProfile::factory()->create(['status' => 'pending']);
     DoctorProfile::factory()->create(['status' => 'disabled']);
 
     $result = $this->service->listActive();
 
-    expect($result)->toBeInstanceOf(Collection::class);
+    expect($result)->toBeInstanceOf(LengthAwarePaginator::class);
+    expect($result->total())->toBe(1);
     expect($result->pluck('id')->all())->toBe([$active->id]);
+    expect($result->first()->relationLoaded('user'))->toBeTrue();
+    expect($result->first()->relationLoaded('specialty'))->toBeTrue();
 });
 
 test('show loads the user relation', function () {

@@ -5,16 +5,18 @@ namespace App\Services;
 use App\Models\Appointment;
 use App\Models\DoctorProfile;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AppointmentService
 {
     /**
-     * List appointments belonging to a doctor.
+     * List appointments belonging to a doctor, paginated and eager loaded.
      */
-    public function listForDoctor(DoctorProfile $profile): Collection
+    public function listForDoctor(DoctorProfile $profile): LengthAwarePaginator
     {
-        return Appointment::where('doctor_id', $profile->id)->get();
+        return Appointment::with(['user', 'doctorProfile'])
+            ->where('doctor_id', $profile->id)
+            ->paginate();
     }
 
     /**

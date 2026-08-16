@@ -683,6 +683,29 @@
                 }
             }
         },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "description": "Revoke the current access token and log the user out.",
+                "operationId": "logout",
+                "responses": {
+                    "204": {
+                        "description": "Logged out successfully"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/register": {
             "post": {
                 "tags": [
@@ -728,14 +751,11 @@
                 "operationId": "doctorListAppointments",
                 "responses": {
                     "200": {
-                        "description": "List of appointments",
+                        "description": "Paginated list of appointments",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Appointment"
-                                    }
+                                    "$ref": "#/components/schemas/PaginatedAppointment"
                                 }
                             }
                         }
@@ -982,14 +1002,11 @@
                 "operationId": "patientListActiveDoctors",
                 "responses": {
                     "200": {
-                        "description": "List of active doctors",
+                        "description": "Paginated list of active doctors",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/DoctorProfileFull"
-                                    }
+                                    "$ref": "#/components/schemas/PaginatedDoctorProfileFull"
                                 }
                             }
                         }
@@ -1399,6 +1416,24 @@
                         "type": "string",
                         "format": "date-time",
                         "nullable": true
+                    },
+                    "user": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "Eager-loaded doctor user (patient list)"
+                    },
+                    "specialty": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Specialty"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "Eager-loaded specialty (patient list)"
                     }
                 },
                 "type": "object"
@@ -1462,6 +1497,24 @@
                         "type": "string",
                         "format": "date-time",
                         "nullable": true
+                    },
+                    "user": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "Eager-loaded patient user (doctor list)"
+                    },
+                    "doctor_profile": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DoctorProfile"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "Eager-loaded doctor profile (doctor list)"
                     }
                 },
                 "type": "object"
@@ -1526,6 +1579,62 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/Specialty"
+                        }
+                    },
+                    "links": {
+                        "type": "object",
+                        "example": {
+                            "first": null,
+                            "last": null,
+                            "prev": null,
+                            "next": null
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "example": {
+                            "current_page": 1,
+                            "per_page": 15,
+                            "total": 15
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedDoctorProfileFull": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DoctorProfileFull"
+                        }
+                    },
+                    "links": {
+                        "type": "object",
+                        "example": {
+                            "first": null,
+                            "last": null,
+                            "prev": null,
+                            "next": null
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "example": {
+                            "current_page": 1,
+                            "per_page": 15,
+                            "total": 15
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedAppointment": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Appointment"
                         }
                     },
                     "links": {

@@ -59,6 +59,9 @@ Route::post('/register', [PatientRegisterController::class, 'register']);
 // INFO: doc is done
 Route::post('login', [LoginController::class, 'login']);
 
+// INFO: logout for every authenticated user
+Route::post('logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
+
 // TEST: middleware test
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/test', [HomeController::class, 'test']);

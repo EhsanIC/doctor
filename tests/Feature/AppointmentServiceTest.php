@@ -4,8 +4,8 @@ use App\Models\Appointment;
 use App\Models\DoctorProfile;
 use App\Models\User;
 use App\Services\AppointmentService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 uses(RefreshDatabase::class);
 
@@ -13,7 +13,7 @@ beforeEach(function () {
     $this->service = new AppointmentService;
 });
 
-test('listForDoctor returns only appointments for the given doctor', function () {
+test('listForDoctor returns only appointments for the given doctor, paginated and eager loaded', function () {
     $patient = User::factory()->create();
     $profile = DoctorProfile::factory()->create();
     $otherProfile = DoctorProfile::factory()->create();
@@ -29,8 +29,11 @@ test('listForDoctor returns only appointments for the given doctor', function ()
 
     $result = $this->service->listForDoctor($profile);
 
-    expect($result)->toBeInstanceOf(Collection::class);
+    expect($result)->toBeInstanceOf(LengthAwarePaginator::class);
+    expect($result->total())->toBe(1);
     expect($result->pluck('id')->all())->toBe([$own->id]);
+    expect($result->first()->relationLoaded('user'))->toBeTrue();
+    expect($result->first()->relationLoaded('doctorProfile'))->toBeTrue();
 });
 
 test('updateStatus updates the appointment status', function () {

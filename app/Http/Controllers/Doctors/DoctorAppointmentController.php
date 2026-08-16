@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Doctors;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdatingAppointmentStatusByDoctorRequest;
+use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use App\Services\AppointmentService;
 use Illuminate\Http\Request;
@@ -23,16 +24,13 @@ class DoctorAppointmentController extends Controller
         tags: ['Doctor'],
         security: [['sanctum' => []]],
         responses: [
-            new OA\Response(response: 200, description: 'List of appointments', content: new OA\JsonContent(
-                type: 'array',
-                items: new OA\Items(ref: '#/components/schemas/Appointment')
-            )),
+            new OA\Response(response: 200, description: 'Paginated list of appointments', content: new OA\JsonContent(ref: '#/components/schemas/PaginatedAppointment')),
             new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
         ]
     )]
     public function index()
     {
-        return $this->service->listForDoctor(auth()->user()->doctorProfile);
+        return AppointmentResource::collection($this->service->listForDoctor(auth()->user()->doctorProfile));
     }
 
     /**

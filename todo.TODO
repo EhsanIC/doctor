@@ -61,7 +61,7 @@
 ================================================================================
 [x] Register               -> POST /api/v1/register (patient role, auto-login; no approval)
 [x] View approved doctors  -> GET /api/v1/patient/appointment (whereStatus 'active', permission:doctor.view)
-                              NOTE: no pagination, no eager loading
+                              NOTE: paginated + eager loads user & specialty (DoctorProfileFullResource)
 [x] Book appointment       -> POST /api/v1/patient/appointment (auth:sanctum + permission:appointment.create)
 
 ================================================================================
@@ -75,8 +75,10 @@
 [~]  4. Clean architecture      Logic lives in controllers; no service/repository layer
 [~]  5. SOLID principles        Partially followed
 [x]  6. Eloquent relations      Defined on all models (Appointment->doctorProfile FK fixed)
-[~]  7. Eager loading           Partial: admin doctor list (with) + profile show (load) only
-[~]  8. Pagination              Only admin profile index paginates
+[x]  7. Eager loading           admin doctor list (with) + profile show (load) + patient
+                                 doctor list (user, specialty) + doctor appointments (user, doctorProfile)
+[x]  8. Pagination              admin profiles, specialties, patient doctor list & doctor
+                                 appointments all paginate
 [x]  9. Secure file/image upload Doctor profile image upload (local disk, mimes + 2MB max)
 [x] 10. Service/Repository      Service layer added (app/Services): DoctorProfileService
                                  + AppointmentService; AppointmentPolicy for ownership;
@@ -129,7 +131,7 @@
 [x] Enforce "pending doctor cannot access panel" (EnsureDoctorActive middleware)
 [x] Real image file upload (store file, validate mime/size)
 [x] Service/Repository layer (refactor controllers)
-[ ] Add pagination + eager loading to patient doctor list & doctor appointments  <-- NEXT
-[ ] Add logout endpoint
-[ ] Make git commits clean/organized + push to GitHub repo "doctor"
+[x] Add pagination + eager loading to patient doctor list & doctor appointments
+[x] Add logout endpoint (POST /api/v1/logout, revokes current token, 204)
+[x] Make git commits clean/organized + push to GitHub repo "doctor"
 ================================================================================

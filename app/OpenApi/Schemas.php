@@ -117,6 +117,8 @@ use OpenApi\Attributes as OA;
     new OA\Property(property: 'working_hours', type: 'string', nullable: true, example: 'Sat-Wed 9:00-17:00'),
     new OA\Property(property: 'created_at', type: 'string', format: 'date-time', nullable: true),
     new OA\Property(property: 'updated_at', type: 'string', format: 'date-time', nullable: true),
+    new OA\Property(property: 'user', ref: '#/components/schemas/User', nullable: true, description: 'Eager-loaded doctor user (patient list)'),
+    new OA\Property(property: 'specialty', ref: '#/components/schemas/Specialty', nullable: true, description: 'Eager-loaded specialty (patient list)'),
 ])]
 
 // Raw doctor profile with its user relation (doctor show/update endpoints)
@@ -137,6 +139,8 @@ use OpenApi\Attributes as OA;
     new OA\Property(property: 'status', ref: '#/components/schemas/AppointmentStatus', example: 'pending'),
     new OA\Property(property: 'created_at', type: 'string', format: 'date-time', nullable: true),
     new OA\Property(property: 'updated_at', type: 'string', format: 'date-time', nullable: true),
+    new OA\Property(property: 'user', ref: '#/components/schemas/User', nullable: true, description: 'Eager-loaded patient user (doctor list)'),
+    new OA\Property(property: 'doctor_profile', ref: '#/components/schemas/DoctorProfile', nullable: true, description: 'Eager-loaded doctor profile (doctor list)'),
 ])]
 
 #[OA\Schema(schema: 'DoctorManagementItem', properties: [
@@ -154,6 +158,18 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(schema: 'PaginatedSpecialty', properties: [
     new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/Specialty')),
+    new OA\Property(property: 'links', type: 'object', example: ['first' => null, 'last' => null, 'prev' => null, 'next' => null]),
+    new OA\Property(property: 'meta', type: 'object', example: ['current_page' => 1, 'per_page' => 15, 'total' => 15]),
+])]
+
+#[OA\Schema(schema: 'PaginatedDoctorProfileFull', properties: [
+    new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/DoctorProfileFull')),
+    new OA\Property(property: 'links', type: 'object', example: ['first' => null, 'last' => null, 'prev' => null, 'next' => null]),
+    new OA\Property(property: 'meta', type: 'object', example: ['current_page' => 1, 'per_page' => 15, 'total' => 15]),
+])]
+
+#[OA\Schema(schema: 'PaginatedAppointment', properties: [
+    new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/Appointment')),
     new OA\Property(property: 'links', type: 'object', example: ['first' => null, 'last' => null, 'prev' => null, 'next' => null]),
     new OA\Property(property: 'meta', type: 'object', example: ['current_page' => 1, 'per_page' => 15, 'total' => 15]),
 ])]

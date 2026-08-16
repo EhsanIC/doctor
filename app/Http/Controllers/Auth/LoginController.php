@@ -50,4 +50,23 @@ class LoginController extends Controller
             'token' => $token,
         ], 201);
     }
+
+    #[OA\Post(
+        path: '/api/v1/logout',
+        operationId: 'logout',
+        summary: 'Logout',
+        description: 'Revoke the current access token and log the user out.',
+        tags: ['Auth'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 204, description: 'Logged out successfully'),
+            new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
+        ]
+    )]
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->noContent();
+    }
 }

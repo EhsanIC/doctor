@@ -119,7 +119,7 @@ test('patient can view active doctors and book an appointment', function () {
 
     $this->getJson('/api/v1/patient/appointment')
         ->assertOk()
-        ->assertJsonCount(1);
+        ->assertJsonCount(1, 'data');
 
     $this->postJson('/api/v1/patient/appointment', [
         'doctor_id' => $profile->id,
@@ -185,7 +185,7 @@ test('doctor only sees their own appointments', function () {
 
     $this->getJson('/api/v1/doctor/appointment')
         ->assertOk()
-        ->assertJsonCount(1)
+        ->assertJsonCount(1, 'data')
         ->assertJsonFragment(['id' => $own->id])
         ->assertJsonMissing(['id' => $other->id]);
 });
