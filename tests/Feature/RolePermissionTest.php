@@ -10,11 +10,11 @@ uses(RefreshDatabase::class);
 test('user can have admin role', function () {
 
     Permission::create([
-        'name' => 'doctor.approve'
+        'name' => 'doctor.approve',
     ]);
 
     $admin = Role::create([
-        'name' => 'admin'
+        'name' => 'admin',
     ]);
 
     $admin->givePermissionTo('doctor.approve');

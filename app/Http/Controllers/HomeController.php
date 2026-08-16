@@ -21,7 +21,7 @@ class HomeController extends Controller
     public function hello()
     {
         return response()->json([
-            'message' => 'Hello API V1'
+            'message' => 'Hello API V1',
         ]);
     }
 

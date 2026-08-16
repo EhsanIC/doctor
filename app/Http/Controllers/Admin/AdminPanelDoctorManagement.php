@@ -7,13 +7,13 @@ use App\Http\Requests\UpdateDoctorStatusRequest;
 use App\Http\Resources\AdminPanelDoctorsManagementResource;
 use App\Http\Resources\DoctorProfileResource;
 use App\Models\DoctorProfile;
-use App\Models\User;
-use Illuminate\Http\Request;
-use PhpParser\Comment\Doc;
+use App\Services\DoctorProfileService;
 use OpenApi\Attributes as OA;
 
 class AdminPanelDoctorManagement extends Controller
 {
+    public function __construct(private DoctorProfileService $service) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -34,11 +34,7 @@ class AdminPanelDoctorManagement extends Controller
     )]
     public function index()
     {
-        $doctors = User::role('doctor')
-            ->with('doctorProfile')
-            ->get();
-
-        return AdminPanelDoctorsManagementResource::collection($doctors);
+        return AdminPanelDoctorsManagementResource::collection($this->service->listDoctors());
     }
 
     /**
@@ -89,11 +85,7 @@ class AdminPanelDoctorManagement extends Controller
     )]
     public function update(UpdateDoctorStatusRequest $request, DoctorProfile $doctor)
     {
-        $newStatus = $request->validated('status');
-
-        $doctor->update([
-            'status' => $newStatus
-        ]);
+        $doctor = $this->service->updateStatus($doctor, $request->validated('status'));
 
         return new DoctorProfileResource($doctor);
     }

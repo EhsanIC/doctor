@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Doctors;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateDoctorProfileRequest;
 use App\Models\DoctorProfile;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Services\DoctorProfileService;
 use OpenApi\Attributes as OA;
 
 class DoctorProfileController extends Controller
 {
+    public function __construct(private DoctorProfileService $service) {}
 
     #[OA\Get(
         path: '/api/v1/doctor/profile/{profile}',
@@ -30,8 +30,7 @@ class DoctorProfileController extends Controller
     )]
     public function show(DoctorProfile $profile)
     {
-        $profile->load('user');
-        return response()->json($profile->load('user'));
+        return response()->json($this->service->show($profile));
     }
 
     #[OA\Patch(
@@ -58,21 +57,10 @@ class DoctorProfileController extends Controller
             new OA\Response(response: 422, ref: '#/components/responses/ValidationError'),
         ]
     )]
-    public function update(UpdateDoctorProfileRequest $request , DoctorProfile $profile) 
+    public function update(UpdateDoctorProfileRequest $request, DoctorProfile $profile)
     {
-        $data = $request->validated();
-
-        if ($request->hasFile('image')) {
-            if ($profile->image) {
-                Storage::disk('local')->delete($profile->image);
-            }
-
-            $data['image'] = $request->file('image')->store('doctors', 'local');
-        }
-
-        $profile->update($data);
+        $profile = $this->service->updateOwn($profile, $request->validated(), $request->file('image'));
 
         return response()->json($profile->load('user'));
     }
-
 }

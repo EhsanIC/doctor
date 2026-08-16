@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -44,7 +43,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
-                'name' => $permission
+                'name' => $permission,
             ]);
         }
 
@@ -55,15 +54,15 @@ class RolesAndPermissionsSeeder extends Seeder
         */
 
         $admin = Role::firstOrCreate([
-            'name' => 'admin'
+            'name' => 'admin',
         ]);
 
         $doctor = Role::firstOrCreate([
-            'name' => 'doctor'
+            'name' => 'doctor',
         ]);
 
         $patient = Role::firstOrCreate([
-            'name' => 'patient'
+            'name' => 'patient',
         ]);
 
         /*

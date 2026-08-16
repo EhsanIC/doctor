@@ -3,11 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Appointment;
+use App\Models\Specialty;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Specialty;
-use Database\Factories\AppointmentFactory;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,7 +24,6 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        
         Specialty::insert([
             ['name' => 'قلب'],
             ['name' => 'پوست'],
@@ -37,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             RolesAndPermissionsSeeder::class,
-            CreateUsersWithRolesSeeder::class
+            CreateUsersWithRolesSeeder::class,
         ]);
     }
 }

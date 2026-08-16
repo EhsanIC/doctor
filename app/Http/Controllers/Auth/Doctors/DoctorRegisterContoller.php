@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth\Doctors;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DoctorRegsiterRequest;
 use App\Models\DoctorProfile;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use OpenApi\Attributes as OA;
@@ -53,7 +52,7 @@ class DoctorRegisterContoller extends Controller
         return response()->json([
             'message' => 'ثبت نام پزشک با موفقیت انجام شد. حساب شما در انتظار تایید مدیر است.',
             'user' => $user, // می توانید اطلاعات کاربر را برگردانید
-            'doctor_profile' => $doctorProfile // و اطلاعات پروفایل پزشک را
+            'doctor_profile' => $doctorProfile, // و اطلاعات پروفایل پزشک را
         ], 201);
     }
 }

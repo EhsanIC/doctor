@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientAppointmentRequest;
-use App\Models\Appointment;
-use App\Models\DoctorProfile;
-use Illuminate\Http\Request;
+use App\Services\AppointmentService;
+use App\Services\DoctorProfileService;
 use OpenApi\Attributes as OA;
 
 class PatientController extends Controller
 {
+    public function __construct(
+        private DoctorProfileService $doctorProfileService,
+        private AppointmentService $appointmentService,
+    ) {}
+
     #[OA\Get(
         path: '/api/v1/patient/appointment',
         operationId: 'patientListActiveDoctors',
@@ -25,8 +29,9 @@ class PatientController extends Controller
             new OA\Response(response: 401, ref: '#/components/responses/Unauthorized'),
         ]
     )]
-    public function index () {
-        return DoctorProfile::whereStatus('active')->get();
+    public function index()
+    {
+        return $this->doctorProfileService->listActive();
     }
 
     #[OA\Post(
@@ -45,19 +50,13 @@ class PatientController extends Controller
             new OA\Response(response: 422, ref: '#/components/responses/ValidationError'),
         ]
     )]
-    public function getAppointment (PatientAppointmentRequest $request) {
-        $appointment = Appointment::create([
-            'user_id' => auth()->id(),
-            'doctor_id' => $request->doctor_id,
-            'appointment_date' => $request->appointment_date,
-            'appointment_time' => $request->appointment_time,
-            'description' => $request->description,
-            'status' => 'pending',
-        ]);
+    public function getAppointment(PatientAppointmentRequest $request)
+    {
+        $appointment = $this->appointmentService->book($request->validated(), $request->user());
 
         return response()->json([
             'message' => 'نوبت با موفقیت ثبت شد.',
-            'data' => $appointment
+            'data' => $appointment,
         ], 201);
     }
 }

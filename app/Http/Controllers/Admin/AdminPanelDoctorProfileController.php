@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateDoctorProfileAdminRequest;
 use App\Http\Resources\DoctorProfileResource;
 use App\Models\DoctorProfile;
-use Illuminate\Http\Request;
-use PhpParser\Comment\Doc;
+use App\Services\DoctorProfileService;
 use OpenApi\Attributes as OA;
 
 class AdminPanelDoctorProfileController extends Controller
 {
+    public function __construct(private DoctorProfileService $service) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -29,9 +30,7 @@ class AdminPanelDoctorProfileController extends Controller
     )]
     public function index()
     {
-        $doctorProfile = DoctorProfile::paginate();
-
-        return DoctorProfileResource::collection($doctorProfile);
+        return DoctorProfileResource::collection($this->service->listProfiles());
     }
 
     /**
@@ -97,10 +96,8 @@ class AdminPanelDoctorProfileController extends Controller
     )]
     public function update(UpdateDoctorProfileAdminRequest $request, DoctorProfile $profile)
     {
-        // dd($doctor->update($request->validated()));
-        $data = $request->validated();
-        $profile->update($data);
-        
+        $profile = $this->service->update($profile, $request->validated());
+
         return new DoctorProfileResource($profile);
     }
 
@@ -112,5 +109,3 @@ class AdminPanelDoctorProfileController extends Controller
         //
     }
 }
-
-

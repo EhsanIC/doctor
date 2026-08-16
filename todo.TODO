@@ -78,7 +78,9 @@
 [~]  7. Eager loading           Partial: admin doctor list (with) + profile show (load) only
 [~]  8. Pagination              Only admin profile index paginates
 [x]  9. Secure file/image upload Doctor profile image upload (local disk, mimes + 2MB max)
-[ ] 10. Service/Repository      No Services or Repositories directories exist
+[x] 10. Service/Repository      Service layer added (app/Services): DoctorProfileService
+                                 + AppointmentService; AppointmentPolicy for ownership;
+                                 controllers slimmed to inject services (no repositories).
 [x] 11. Migrations              All tables migrated (users, specialties, doctor_profiles,
                                  appointments, permission tables, tokens)
 [~] 12. Error handling          No custom exception handling / try-catch
@@ -126,8 +128,8 @@
 [x] Add SoftDeletes trait to DoctorProfile + Appointment models
 [x] Enforce "pending doctor cannot access panel" (EnsureDoctorActive middleware)
 [x] Real image file upload (store file, validate mime/size)
-[ ] Service/Repository layer (refactor controllers)  <-- NEXT
-[ ] Add pagination + eager loading to patient doctor list & doctor appointments
+[x] Service/Repository layer (refactor controllers)
+[ ] Add pagination + eager loading to patient doctor list & doctor appointments  <-- NEXT
 [ ] Add logout endpoint
 [ ] Make git commits clean/organized + push to GitHub repo "doctor"
 ================================================================================

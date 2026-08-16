@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DoctorStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateDoctorStatusRequest extends FormRequest
 {
@@ -25,7 +27,7 @@ class UpdateDoctorStatusRequest extends FormRequest
     {
         return [
             // This ensures the input matches one of the cases in your DoctorStatus Enum
-            'status' => ['required', new \Illuminate\Validation\Rules\Enum(\App\Enums\DoctorStatus::class)],
+            'status' => ['required', new Enum(DoctorStatus::class)],
         ];
     }
 }

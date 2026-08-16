@@ -15,11 +15,11 @@ class DoctorProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'profile_id' => $this->id, 
+            'profile_id' => $this->id,
             'user_id' => $this->user_id,
-            'specialty_id' => $this->specialty_id, 
+            'specialty_id' => $this->specialty_id,
             'status' => $this->status,
-            'image_url' => $this->image, 
+            'image_url' => $this->image,
             'bio' => $this->bio,
 
             // 'created_at' => $this->created_at?->toDateTimeString(),

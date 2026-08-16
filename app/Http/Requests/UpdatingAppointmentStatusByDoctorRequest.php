@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\AppointmentStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdatingAppointmentStatusByDoctorRequest extends FormRequest
 {
@@ -23,7 +25,7 @@ class UpdatingAppointmentStatusByDoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', new \Illuminate\Validation\Rules\Enum(\App\Enums\AppointmentStatus::class)],
+            'status' => ['required', new Enum(AppointmentStatus::class)],
         ];
     }
 }

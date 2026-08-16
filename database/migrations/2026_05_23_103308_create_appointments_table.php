@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
 
             // Foreign keys
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null'); 
-            $table->foreignId('doctor_id')->nullable()->constrained('doctor_profiles')->onDelete('set null'); 
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('doctor_id')->nullable()->constrained('doctor_profiles')->onDelete('set null');
 
-            $table->date('appointment_date'); 
-            $table->time('appointment_time'); 
+            $table->date('appointment_date');
+            $table->time('appointment_time');
             $table->text('description')->nullable();
 
             $table->enum('status', ['pending', 'approved', 'canceled'])->default('pending');
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->softDeletes();
 
             // created_at and updated_at
-            $table->timestamps(); 
+            $table->timestamps();
         });
     }
 

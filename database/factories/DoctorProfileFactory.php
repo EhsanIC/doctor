@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\DoctorProfile;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\User;
 use App\Models\Specialty;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<DoctorProfile>
@@ -35,11 +35,10 @@ class DoctorProfileFactory extends Factory
 
             'bio' => fake()->paragraph(),
 
-            
-            'mobile' => fake()->unique()->phoneNumber(), 
-            'medical_code' => fake()->unique()->regexify('[A-Z]{2}[0-9]{5}'), 
-            'address' => fake()->address(), 
-            'working_hours' => fake()->text(100), 
+            'mobile' => fake()->unique()->phoneNumber(),
+            'medical_code' => fake()->unique()->regexify('[A-Z]{2}[0-9]{5}'),
+            'address' => fake()->address(),
+            'working_hours' => fake()->text(100),
         ];
     }
 }

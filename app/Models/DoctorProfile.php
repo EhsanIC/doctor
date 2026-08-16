@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DoctorStatus;
+use Database\Factories\DoctorProfileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DoctorProfile extends Model
 {
-    /** @use HasFactory<\Database\Factories\DoctorProfileFactory> */
+    /** @use HasFactory<DoctorProfileFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -24,18 +25,18 @@ class DoctorProfile extends Model
         'medical_code',
         'address',
         'working_hours',
-    ];  
+    ];
 
     protected $casts = [
         'status' => DoctorStatus::class,
     ];
 
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function specialty() : BelongsTo
+    public function specialty(): BelongsTo
     {
         return $this->belongsTo(Specialty::class);
     }

@@ -1,9 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\EnsureDoctorActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,15 +19,15 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware('api')
                 ->prefix('api/v1')
                 ->group(base_path('routes/api_v1.php'));
-            },
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-            $middleware->alias([
-                'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-                'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-                'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-                'doctor.active' => \App\Http\Middleware\EnsureDoctorActive::class,
-            ]);
+        $middleware->alias([
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'doctor.active' => EnsureDoctorActive::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Doctors;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdatingAppointmentStatusByDoctorRequest;
 use App\Models\Appointment;
+use App\Services\AppointmentService;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class DoctorAppointmentController extends Controller
 {
+    public function __construct(private AppointmentService $service) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -29,9 +32,7 @@ class DoctorAppointmentController extends Controller
     )]
     public function index()
     {
-        $doctorProfile = auth()->user()->doctorProfile;
-
-        return Appointment::where('doctor_id', $doctorProfile?->id)->get();
+        return $this->service->listForDoctor(auth()->user()->doctorProfile);
     }
 
     /**
@@ -77,13 +78,9 @@ class DoctorAppointmentController extends Controller
     )]
     public function update(UpdatingAppointmentStatusByDoctorRequest $request, Appointment $appointment)
     {
-        $doctorProfile = auth()->user()->doctorProfile;
+        $this->authorize('updateStatus', $appointment);
 
-        if (! $doctorProfile || $doctorProfile->id !== $appointment->doctor_id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $appointment->update($request->validated());
+        $appointment = $this->service->updateStatus($appointment, $request->validated());
 
         return response()->json($appointment->fresh());
     }
