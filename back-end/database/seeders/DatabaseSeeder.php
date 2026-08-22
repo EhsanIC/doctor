@@ -25,10 +25,11 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         Specialty::insert([
-            ['name' => 'قلب'],
-            ['name' => 'پوست'],
-            ['name' => 'مغز'],
-            ['name' => 'ارتوپدی'],
+            ['name' => 'Cardiology'],
+            ['name' => 'Dermatology'],
+            ['name' => 'Neurology'],
+            ['name' => 'Orthopedics'],
+            ['name' => 'Ophthalmology'],
         ]);
 
         Appointment::factory(10)->create();

@@ -17,7 +17,7 @@
 [X] Confirm backend SPA cookie mode is configured (SANCTUM_STATEFUL_DOMAINS, SESSION_DOMAIN, CORS supports_credentials, EnsureFrontendRequestsAreStateful middleware)
 [X] Confirm/build a "current user" endpoint to repopulate Zustand on page refresh
 [X] Create middleware or client-side auth check - route protection (redirect by role / missing user)
-[ ] Seed 2-3 specialties directly in DB (Cardiology, Dermatology, Neurology) - needed for Step 5 dropdown
+[X] Seed 2-3 specialties directly in DB (Cardiology, Dermatology, Neurology) - needed for Step 5 dropdown
 
 ## STEP 1 - LOGIN PAGE
 [ ] Build /login page - form (email, password)

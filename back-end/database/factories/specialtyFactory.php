@@ -19,10 +19,11 @@ class specialtyFactory extends Factory
     {
         return [
             'name' => fake()->randomElement([
-                'قلب',
-                'پوست',
-                'مغز',
-                'ارتوپدی',
+                'Cardiology',
+                'Dermatology',
+                'Neurology',
+                'Orthopedics',
+                'Ophthalmology',
             ]),
         ];
     }
