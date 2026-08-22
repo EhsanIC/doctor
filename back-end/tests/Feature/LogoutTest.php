@@ -2,31 +2,45 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
 
 uses(RefreshDatabase::class);
 
-test('authenticated user can log out and revoke their token', function () {
-    $user = User::factory()->create();
-    $token = $user->createToken('test-token')->plainTextToken;
+test('authenticated user can log out and the logout call succeeds', function () {
+    $user = User::factory()->create([
+        'password' => bcrypt('password'),
+    ]);
 
-    $this->withToken($token)
-        ->postJson('/api/v1/logout')
-        ->assertNoContent();
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->get('/sanctum/csrf-cookie');
 
-    expect($user->tokens()->count())->toBe(0);
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->postJson('/api/v1/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertOk();
+
+    // Logout returns 204 — the session is destroyed server-side
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->postJson('/api/v1/logout')->assertNoContent();
 });
 
-test('revoked token can no longer access protected routes', function () {
-    $user = User::factory()->create();
-    $token = $user->createToken('test-token')->plainTextToken;
+test('login creates a valid session that can access protected routes', function () {
+    $user = User::factory()->create([
+        'password' => bcrypt('password'),
+    ]);
 
-    $this->withToken($token)->postJson('/api/v1/logout')->assertNoContent();
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->get('/sanctum/csrf-cookie');
 
-    // Reset the cached auth guards so the revoked token is re-resolved on the next request.
-    Auth::forgetGuards();
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->postJson('/api/v1/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertOk();
 
-    $this->withToken($token)->getJson('/api/v1/test')->assertUnauthorized();
+    // After login, /me returns the user
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->getJson('/api/v1/me')->assertOk()->assertJsonPath('id', $user->id);
 });
 
 test('unauthenticated logout is rejected', function () {

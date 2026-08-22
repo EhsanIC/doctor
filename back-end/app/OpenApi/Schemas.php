@@ -176,13 +176,11 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(schema: 'LoginResponse', properties: [
     new OA\Property(property: 'user', ref: '#/components/schemas/User'),
-    new OA\Property(property: 'token', type: 'string', example: '1|abcdef123456'),
 ])]
 
 #[OA\Schema(schema: 'PatientRegisterResponse', properties: [
     new OA\Property(property: 'message', type: 'string', example: 'Registration successful.'),
     new OA\Property(property: 'user', ref: '#/components/schemas/User'),
-    new OA\Property(property: 'token', type: 'string', example: '1|abcdef123456'),
 ])]
 
 #[OA\Schema(schema: 'RegisterResponse', properties: [

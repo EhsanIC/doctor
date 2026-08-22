@@ -1,0 +1,89 @@
+# PHASE 1 - TODO LIST
+# Doctor Appointment System - Functional MVP
+
+## STATUS LEGEND
+[X] = done
+[~] = in progress / partially done / needs fix
+[ ] = not done
+
+## SETUP
+[~] Install shadcn components: (missing: form)
+    bunx --bun shadcn@latest add form input label select textarea button card table badge avatar dropdown-menu calendar popover sonner skeleton
+[X] Install libraries:
+    bun add react-hook-form zod @hookform/resolvers swr zustand
+[X] Create lib/api.ts - fetch helper, credentials: 'include', attaches X-XSRF-TOKEN header
+[X] Create lib/auth-store.ts - zustand store holding current user (id, name, role)
+[X] Call GET /sanctum/csrf-cookie once before login/register (sets XSRF-TOKEN cookie)
+[X] Confirm backend SPA cookie mode is configured (SANCTUM_STATEFUL_DOMAINS, SESSION_DOMAIN, CORS supports_credentials, EnsureFrontendRequestsAreStateful middleware)
+[X] Confirm/build a "current user" endpoint to repopulate Zustand on page refresh
+[X] Create middleware or client-side auth check - route protection (redirect by role / missing user)
+[ ] Seed 2-3 specialties directly in DB (Cardiology, Dermatology, Neurology) - needed for Step 5 dropdown
+
+## STEP 1 - LOGIN PAGE
+[ ] Build /login page - form (email, password)
+[ ] zod schema: email + password required
+[ ] Call GET /sanctum/csrf-cookie before submit (if not already called this session)
+[ ] Connect to POST /login
+[ ] Save returned user object to zustand store on success
+[ ] Redirect by role (admin -> doctors list, doctor -> appointments, patient -> find doctor)
+[ ] Show error on failed login (sonner or inline message)
+
+## STEP 2 - PATIENT SIGNUP
+[ ] Build /signup/patient page - form (name, email, password, confirm password)
+[ ] zod schema: email format, password match, min length
+[ ] Connect to POST /register
+[ ] Save returned user to zustand store on success -> redirect to Find a Doctor
+
+## STEP 3 - DOCTOR SIGNUP
+[ ] Build /signup/doctor page - form (name, email, password, confirm password)
+[ ] Connect to POST /doctor/register
+[ ] On success: show "pending approval" message (sonner) -> redirect to /login
+
+## STEP 4 - ADMIN: DOCTOR LIST + APPROVE/DISABLE
+[ ] Build /admin/doctors page
+[ ] swr (useSWR + apiFetch) -> GET /admin/doctors
+[ ] Render table: name, email, status (badge)
+[ ] skeleton while loading
+[ ] Approve/Disable button per row (dropdown-menu or inline button)
+[ ] apiFetch PATCH /admin/doctors/{id}
+[ ] mutate() to refresh table after action
+
+## STEP 5 - DOCTOR: COMPLETE PROFILE
+[ ] Build /doctor/profile page
+[ ] Form: mobile, image upload, specialty (select), medical code, address, description (textarea), working hours
+[ ] Image upload handled via FormData (multipart, skip Content-Type header, keep credentials + X-XSRF-TOKEN)
+[ ] Connect to PATCH /doctor/profile/{id}
+[ ] sonner success toast on save
+
+## STEP 6 - PATIENT: FIND A DOCTOR
+[ ] Build /patient/doctors page
+[ ] swr (useSWR + apiFetch) -> GET /patient/appointment (returns approved doctors)
+[ ] Render doctor cards: name, specialty (badge), avatar/photo
+[ ] skeleton cards while loading
+[ ] Each card links to /patient/doctors/[id]
+
+## STEP 7 - PATIENT: DOCTOR DETAIL + BOOKING
+[ ] Build /patient/doctors/[id] page
+[ ] Show doctor profile (card): name, specialty, bio, address, working hours
+[ ] Booking form: calendar+popover (date), time input, textarea (notes)
+[ ] zod schema: date + time required, notes optional
+[ ] Connect to POST /patient/appointment
+[ ] sonner confirmation on success
+
+## STEP 8 - DOCTOR: MY APPOINTMENTS
+[ ] Build /doctor/appointments page
+[ ] swr (useSWR + apiFetch) -> GET /doctor/appointment
+[ ] Render table: patient name, date, time, notes, status (badge)
+[ ] Approve/Cancel button per row
+[ ] apiFetch PATCH /doctor/appointment/{id}
+[ ] mutate() to refresh table after action
+
+## FINAL TEST
+[ ] Register a doctor
+[ ] Approve doctor as admin
+[ ] Complete doctor profile
+[ ] Register a patient
+[ ] Book appointment as patient
+[ ] Approve appointment as doctor
+[ ] Confirm full cycle works end-to-end
+

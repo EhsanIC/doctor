@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientRegisterRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use OpenApi\Attributes as OA;
 
@@ -34,12 +35,12 @@ class PatientRegisterController extends Controller
 
         $user->assignRole('patient');
 
-        $token = $user->createToken('patient-token')->plainTextToken;
+        Auth::guard('web')->login($user);
+        $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Registration successful.',
             'user' => $user,
-            'token' => $token,
         ], 201);
     }
 }

@@ -14,38 +14,49 @@ beforeEach(function () {
 });
 
 test('an admin can login successfully', function () {
-    $response = $this->postJson('/api/v1/login', [
-        'email' => 'admin@test.com',
-        'password' => 'password',
-    ]);
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->get('/sanctum/csrf-cookie');
 
-    $response->assertStatus(201)
-        ->assertJsonStructure(['user', 'token']);
+    $response = $this->withHeader('Referer', 'http://localhost:3000')
+        ->postJson('/api/v1/login', [
+            'email' => 'admin@test.com',
+            'password' => 'password',
+        ]);
 
-    expect($response->json('token'))->not()->toBeEmpty();
+    $response->assertStatus(200)
+        ->assertJsonStructure(['user']);
+
     expect($response->json('user.email'))->toBe('admin@test.com');
 });
 
 test('a doctor can login successfully', function () {
-    $response = $this->postJson('/api/v1/login', [
-        'email' => 'doctor@test.com',
-        'password' => 'password',
-    ]);
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->get('/sanctum/csrf-cookie');
 
-    $response->assertStatus(201)
-        ->assertJsonStructure(['user', 'token']);
+    $response = $this->withHeader('Referer', 'http://localhost:3000')
+        ->postJson('/api/v1/login', [
+            'email' => 'doctor@test.com',
+            'password' => 'password',
+        ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure(['user']);
 
     expect($response->json('user.email'))->toBe('doctor@test.com');
 });
 
 test('a patient can login successfully', function () {
-    $response = $this->postJson('/api/v1/login', [
-        'email' => 'patient@test.com',
-        'password' => 'password',
-    ]);
+    $this->withHeader('Referer', 'http://localhost:3000')
+        ->get('/sanctum/csrf-cookie');
 
-    $response->assertStatus(201)
-        ->assertJsonStructure(['user', 'token']);
+    $response = $this->withHeader('Referer', 'http://localhost:3000')
+        ->postJson('/api/v1/login', [
+            'email' => 'patient@test.com',
+            'password' => 'password',
+        ]);
+
+    $response->assertStatus(200)
+        ->assertJsonStructure(['user']);
 
     expect($response->json('user.email'))->toBe('patient@test.com');
 });

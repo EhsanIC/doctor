@@ -4,14 +4,12 @@ Reference for all backend routes. Generated from the OpenAPI/Swagger doc (`stora
 
 - **Base URL:** `/api/v1`
 - **Content type:** `application/json` (profile image update uses `multipart/form-data`)
-- **Auth scheme:** Sanctum bearer token — `Authorization: Bearer <token>`
-
-## Access levels
+- **Auth scheme:** Sanctum SPA cookie session. Call `GET /sanctum/csrf-cookie` before POST/PATCH/DELETE requests, and always send `credentials: 'include'`. The browser manages the session cookie automatically — no bearer token needed.
 
 | Label | Meaning |
 | --- | --- |
 | Public | No authentication required |
-| Auth | Requires a valid Sanctum token (`auth:sanctum`) |
+| Auth | Requires a valid Sanctum session cookie (`auth:sanctum`) |
 | Admin | Auth + `role:admin` |
 | Auth + permission | Auth + the listed Spatie permission (and, for profile routes, the `DoctorProfile` policy) |
 
@@ -23,10 +21,12 @@ All non-Public routes also return `401` (missing/invalid token) and, where a rol
 
 | Method | Path | Summary | Access | Success |
 | --- | --- | --- | --- | --- |
-| POST | `/login` | Authenticate a user and issue a Sanctum token | Public | 200 |
-| POST | `/logout` | Revoke the current token and log out | Auth | 204 |
+| POST | `/login` | Authenticate a user and start a Sanctum SPA cookie session | Public | 200 |
+| POST | `/logout` | Destroy the session and log out | Auth | 204 |
 | POST | `/register` | Register a new patient (regular user), auto-login | Public | 201 |
 | POST | `/doctor/register` | Register a new doctor (pending admin approval) | Public | 201 |
+
+| GET | `/me` | Get the currently authenticated user (for SPA rehydration on refresh) | Auth | 200 |
 
 ---
 
@@ -107,7 +107,7 @@ Doctor routes also require the doctor profile to be `active` (`doctor.active` mi
 
 | Code | Meaning |
 | --- | --- |
-| 401 | `Unauthorized` — missing or invalid token |
+| 401 | `Unauthorized` — missing or expired session |
 | 403 | `Forbidden` — insufficient role/permission |
 | 404 | `NotFound` — resource does not exist |
 | 422 | `ValidationError` — request validation failed |

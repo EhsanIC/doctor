@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use OpenApi\Attributes as OA;
 
@@ -14,7 +15,7 @@ class LoginController extends Controller
         path: '/api/v1/login',
         operationId: 'login',
         summary: 'Login',
-        description: 'Authenticate a user (admin, doctor or patient) and issue a Sanctum token.',
+        description: 'Authenticate a user (admin, doctor or patient) and start a Sanctum SPA cookie session. Call GET /sanctum/csrf-cookie before this endpoint.',
         tags: ['Auth'],
         requestBody: new OA\RequestBody(
             required: true,
@@ -43,19 +44,19 @@ class LoginController extends Controller
             return response(['message' => 'اطلاعات وارد شده اشتباه است'], 401);
         }
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
+        Auth::guard('web')->login($user);
+        $request->session()->regenerate();
 
         return response([
             'user' => $user,
-            'token' => $token,
-        ], 201);
+        ], 200);
     }
 
     #[OA\Post(
         path: '/api/v1/logout',
         operationId: 'logout',
         summary: 'Logout',
-        description: 'Revoke the current access token and log the user out.',
+        description: 'Destroy the session and log the user out.',
         tags: ['Auth'],
         security: [['sanctum' => []]],
         responses: [
@@ -65,7 +66,9 @@ class LoginController extends Controller
     )]
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->noContent();
     }

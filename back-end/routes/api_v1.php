@@ -62,6 +62,11 @@ Route::post('login', [LoginController::class, 'login']);
 // INFO: logout for every authenticated user
 Route::post('logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
 
+// INFO: get current user (for SPA to rehydrate on page refresh)
+Route::get('/me', function (\Illuminate\Http\Request $request) {
+    return response()->json($request->user());
+})->middleware('auth:sanctum');
+
 // TEST: middleware test
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/test', [HomeController::class, 'test']);

@@ -7,7 +7,7 @@ use OpenApi\Attributes as OA;
 #[OA\Info(
     version: '1.0.0',
     title: 'Doctor Management & Appointment Booking API',
-    description: "REST API for the Doctor Management and Simple Appointment Booking System.\n\nRoles: Management (admin), Doctor, Regular user (patient).\n\nAuthentication uses Laravel Sanctum bearer tokens. Obtain a token from POST /api/v1/login, then send it as `Authorization: Bearer <token>`.",
+    description: "REST API for the Doctor Management and Simple Appointment Booking System.\n\nRoles: Management (admin), Doctor, Regular user (patient).\n\nAuthentication uses Laravel Sanctum SPA cookie mode. First call GET /sanctum/csrf-cookie, then POST /api/v1/login with credentials: 'include'. The browser handles the session cookie automatically — no token needed.",
     contact: new OA\Contact(name: 'Support', email: 'mebrahimi405@yahoo.com'),
 )]
 
@@ -21,14 +21,14 @@ use OpenApi\Attributes as OA;
 
 #[OA\SecurityScheme(
     securityScheme: 'sanctum',
-    type: 'http',
-    scheme: 'bearer',
-    bearerFormat: 'JWT',
-    description: 'Laravel Sanctum token. Enter the token returned by /api/v1/login in the format "Bearer <token>".'
+    type: 'apiKey',
+    in: 'cookie',
+    name: 'XSRF-TOKEN',
+    description: 'Laravel Sanctum SPA cookie session. Call GET /sanctum/csrf-cookie first, then POST /api/v1/login. The browser manages the session cookie automatically.'
 )]
 
 // Reusable responses (defined once, referenced everywhere)
-#[OA\Response(response: 'Unauthorized', description: 'Unauthenticated - missing or invalid token.', content: new OA\JsonContent(
+#[OA\Response(response: 'Unauthorized', description: 'Unauthenticated - missing or expired session.', content: new OA\JsonContent(
     properties: [new OA\Property(property: 'message', type: 'string', example: 'Unauthenticated.')]
 ))]
 #[OA\Response(response: 'Forbidden', description: 'Forbidden - the authenticated user does not have the required role/permission.', content: new OA\JsonContent(
