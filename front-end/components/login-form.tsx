@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { mutate } from "swr"
 import { cn } from "@/lib/utils"
@@ -13,6 +15,7 @@ import {
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
@@ -20,6 +23,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { apiFetch, csrfCookie } from "@/lib/api"
 import { type AppUser, toAppUser } from "@/hooks/useUser"
+
+const loginSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+})
+
+type LoginFormData = z.infer<typeof loginSchema>
 
 type RawUser = { id: number; name: string; roles?: { name: string }[] };
 
@@ -34,33 +44,35 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
+  async function onSubmit(data: LoginFormData) {
     try {
       await csrfCookie();
-      const data = await apiFetch<{ user: RawUser }>("/api/v1/login", {
+      const response = await apiFetch<{ user: RawUser }>("/api/v1/login", {
         method: "POST",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(data),
       });
 
-      const appUser = toAppUser(data.user);
+      const appUser = toAppUser(response.user);
 
       // Prime the SWR cache so any useUser() call sees the user immediately.
       mutate("/api/v1/me", appUser, false);
 
       router.replace(ROLE_REDIRECT[appUser.role]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setLoading(false);
+      setError("root", {
+        message:
+          err instanceof Error ? err.message : "Something went wrong",
+      });
     }
   }
 
@@ -74,7 +86,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
                 <Button variant="outline" type="button">
@@ -105,10 +117,9 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  {...register("email")}
                 />
+                <FieldError errors={[errors.email]} />
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -123,19 +134,18 @@ export function LoginForm({
                 <Input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  {...register("password")}
                 />
+                <FieldError errors={[errors.password]} />
               </Field>
-              {error && (
+              {errors.root && (
                 <FieldDescription className="text-destructive">
-                  {error}
+                  {errors.root.message}
                 </FieldDescription>
               )}
               <Field>
-                <Button type="submit" disabled={loading}>
-                  {loading ? "Logging in..." : "Login"}
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Logging in..." : "Login"}
                 </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="#">Sign up</a>

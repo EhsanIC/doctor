@@ -12,21 +12,23 @@
 [X] Install libraries:
     bun add react-hook-form zod @hookform/resolvers swr zustand
 [X] Create lib/api.ts - fetch helper, credentials: 'include', attaches X-XSRF-TOKEN header
-[X] Create lib/auth-store.ts - zustand store holding current user (id, name, role)
+[X] Create lib/auth-store.ts - zustand store holding current user (id, name, role) (REMOVED — migrated to swr useUser hook)
 [X] Call GET /sanctum/csrf-cookie once before login/register (sets XSRF-TOKEN cookie)
 [X] Confirm backend SPA cookie mode is configured (SANCTUM_STATEFUL_DOMAINS, SESSION_DOMAIN, CORS supports_credentials, EnsureFrontendRequestsAreStateful middleware)
 [X] Confirm/build a "current user" endpoint to repopulate Zustand on page refresh
-[X] Create middleware or client-side auth check - route protection (redirect by role / missing user)
+[X] Create middleware or client-side auth check - route protection (redirect by role / missing user) (uses useUser swr hook)
 [X] Seed 2-3 specialties directly in DB (Cardiology, Dermatology, Neurology) - needed for Step 5 dropdown
 
 ## STEP 1 - LOGIN PAGE
-[ ] Build /login page - form (email, password)
-[ ] zod schema: email + password required
-[ ] Call GET /sanctum/csrf-cookie before submit (if not already called this session)
-[ ] Connect to POST /login
-[ ] Save returned user object to zustand store on success
-[ ] Redirect by role (admin -> doctors list, doctor -> appointments, patient -> find doctor)
-[ ] Show error on failed login (sonner or inline message)
+[X] Build /login page - form (email, password)
+[X] zod schema: email + password required (zod + react-hook-form)
+[X] Call GET /sanctum/csrf-cookie before submit (if not already called this session)
+[X] Connect to POST /login
+[X] Save returned user object to swr store on success
+[X] Redirect by role (admin -> doctors list, doctor -> appointments, patient -> find doctor)
+[X] Show error on failed login (inline message via FieldDescription + FieldError)
+
+!FIX: role redirect to there panels
 
 ## STEP 2 - PATIENT SIGNUP
 [ ] Build /signup/patient page - form (name, email, password, confirm password)
