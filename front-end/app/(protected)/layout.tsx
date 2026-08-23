@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/lib/auth-store";
-import { apiFetch } from "@/lib/api";
-import type { AppUser } from "@/lib/auth-store";
+import { useUser } from "@/hooks/useUser";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProtectedLayout({
@@ -13,37 +11,15 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { user, setUser } = useAuthStore();
-  const [checking, setChecking] = useState(!user);
+  const { user, isLoading } = useUser();
 
   useEffect(() => {
-    // Already have a user in the store (e.g. just logged in) — skip the /me call.
-    if (user) {
-      setChecking(false);
-      return;
+    if (!isLoading && !user) {
+      router.replace("/login");
     }
+  }, [isLoading, user, router]);
 
-    let cancelled = false;
-
-    apiFetch<AppUser>("/api/v1/me")
-      .then((u) => {
-        if (!cancelled) {
-          setUser(u);
-          setChecking(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          router.replace("/login");
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user, setUser, router]);
-
-  if (checking) {
+  if (isLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center p-8">
         <div className="w-full max-w-sm space-y-4">

@@ -1,3 +1,6 @@
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { mutate } from "swr"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,11 +18,52 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { apiFetch, csrfCookie } from "@/lib/api"
+import { type AppUser, toAppUser } from "@/hooks/useUser"
+
+type RawUser = { id: number; name: string; roles?: { name: string }[] };
+
+const ROLE_REDIRECT: Record<AppUser["role"], string> = {
+  admin: "/admin/doctors",
+  doctor: "/doctor/appointments",
+  patient: "/patient/doctors",
+};
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      await csrfCookie();
+      const data = await apiFetch<{ user: RawUser }>("/api/v1/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const appUser = toAppUser(data.user);
+
+      // Prime the SWR cache so any useUser() call sees the user immediately.
+      mutate("/api/v1/me", appUser, false);
+
+      router.replace(ROLE_REDIRECT[appUser.role]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -30,7 +74,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={onSubmit}>
             <FieldGroup>
               <Field>
                 <Button variant="outline" type="button">
@@ -61,6 +105,8 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </Field>
@@ -74,10 +120,23 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </Field>
+              {error && (
+                <FieldDescription className="text-destructive">
+                  {error}
+                </FieldDescription>
+              )}
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Logging in..." : "Login"}
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="#">Sign up</a>
                 </FieldDescription>

@@ -55,9 +55,9 @@ async function buildHeaders(options: RequestInit): Promise<Headers> {
 
 async function handleResponse(res: Response): Promise<Response> {
   if (res.status === 401) {
-    // Session expired — clear auth store and redirect.
-    const { useAuthStore } = await import("@/lib/auth-store");
-    useAuthStore.getState().clearUser();
+    // Session expired — clear SWR cache and hard-redirect.
+    const { mutate } = await import("swr");
+    mutate("/api/v1/me", undefined, { revalidate: false });
     window.location.href = "/login";
   }
 

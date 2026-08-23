@@ -2,14 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/lib/auth-store";
+import { useUser } from "@/hooks/useUser";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = useAuthStore((s) => s.user);
+  const { user } = useUser();
   const router = useRouter();
 
   useEffect(() => {

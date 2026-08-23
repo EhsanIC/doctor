@@ -2,12 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { mutate } from "swr";
 import { apiFetchNoContent, csrfCookie } from "@/lib/api";
-import { useAuthStore } from "@/lib/auth-store";
 
 export default function LogoutPage() {
   const router = useRouter();
-  const clearUser = useAuthStore((s) => s.clearUser);
   const called = useRef(false);
 
   useEffect(() => {
@@ -20,14 +19,14 @@ export default function LogoutPage() {
         await csrfCookie();
         await apiFetchNoContent("/api/v1/logout", { method: "POST" });
       } finally {
-        // Clear zustand and redirect regardless of server response.
-        clearUser();
+        // Clear SWR cache and redirect regardless of server response.
+        mutate("/api/v1/me", undefined, { revalidate: false });
         router.replace("/login");
       }
     }
 
     logout();
-  }, [clearUser, router]);
+  }, [router]);
 
   return null;
 }
