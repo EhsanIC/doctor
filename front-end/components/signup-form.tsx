@@ -23,6 +23,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/password-input"
 import { apiFetch, csrfCookie } from "@/lib/api"
 import { toAppUser } from "@/hooks/useUser"
 
@@ -107,9 +108,8 @@ export function SignupForm({
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input
+                    <PasswordInput
                       id="password"
-                      type="password"
                       {...register("password")}
                     />
                     <FieldError errors={[errors.password]} />
@@ -118,9 +118,8 @@ export function SignupForm({
                     <FieldLabel htmlFor="password_confirmation">
                       Confirm Password
                     </FieldLabel>
-                    <Input
+                    <PasswordInput
                       id="password_confirmation"
-                      type="password"
                       {...register("password_confirmation")}
                     />
                     <FieldError errors={[errors.password_confirmation]} />

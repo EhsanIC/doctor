@@ -42,9 +42,14 @@ class RolesAndPermissionsSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate([
-                'name' => $permission,
-            ]);
+            Permission::updateOrCreate(
+                [
+                    'name' => $permission,
+                ],
+                [
+                    'guard_name' => 'web',
+                ],
+            );
         }
 
         /*
@@ -53,17 +58,32 @@ class RolesAndPermissionsSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
 
-        $admin = Role::firstOrCreate([
-            'name' => 'admin',
-        ]);
+        $admin = Role::updateOrCreate(
+            [
+                'name' => 'admin',
+            ],
+            [
+                'guard_name' => 'web',
+            ],
+        );
 
-        $doctor = Role::firstOrCreate([
-            'name' => 'doctor',
-        ]);
+        $doctor = Role::updateOrCreate(
+            [
+                'name' => 'doctor',
+            ],
+            [
+                'guard_name' => 'web',
+            ],
+        );
 
-        $patient = Role::firstOrCreate([
-            'name' => 'patient',
-        ]);
+        $patient = Role::updateOrCreate(
+            [
+                'name' => 'patient',
+            ],
+            [
+                'guard_name' => 'web',
+            ],
+        );
 
         /*
         |--------------------------------------------------------------------------
