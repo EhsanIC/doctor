@@ -118,46 +118,12 @@
     --sidebar-ring: oklch(0.56 0.021 213.5);
 }
 
-@layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
-    input,
-    textarea,
-    select,
-    button {
-        font-family: inherit;
-    }
-    html {
-        @apply font-serif;
-    }
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-serif;
-  }
-}
-
-/* Outside any @layer — guarantees priority over Tailwind's utility layer */
+/* Override browser autofill background and text color */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-text-fill-color: var(--foreground) !important;
-  caret-color: var(--foreground);
-  transition: background-color 9999s ease-in-out 0s !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  line-height: inherit !important;
-}
+    -webkit-text-fill-color: var(--foreground) !important;
+    caret-color: var(--foreground);
+    transition: background-color 9999s ease-in-out 0s !important;
 }
