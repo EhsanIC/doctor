@@ -128,4 +128,24 @@
   html {
     @apply font-serif;
   }
+
+  /* Override browser autofill background and text color */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important; /* text color */
+    caret-color: #000; /* cursor color, since text-fill-color hides normal color */
+    transition: background-color 5000s ease-in-out 0s; /* prevents flash on load */
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px oklch(0.218 0.008 223.9) inset !important;
+    -webkit-text-fill-color: oklch(0.987 0.002 197.1) !important;
+    caret-color: oklch(0.987 0.002 197.1);
+  }
 }
