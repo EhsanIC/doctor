@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Roboto_Slab, Roboto } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { SWRConfig } from "swr";
+import { Toaster } from "@/components/ui/sonner";
 
 const robotoHeading = Roboto({subsets:['latin'],variable:'--font-heading'});
 
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <SWRConfig value={{ revalidateOnFocus: true }}>
           {children}
+          <Toaster />
         </SWRConfig>
       </body>
     </html>

@@ -28,18 +28,16 @@
 [X] Redirect by role (admin -> doctors list, doctor -> appointments, patient -> find doctor)
 [X] Show error on failed login (inline message via FieldDescription + FieldError)
 
-!FIX: role redirect to there panels
-
 ## STEP 2 - PATIENT SIGNUP
-[ ] Build /signup/patient page - form (name, email, password, confirm password)
-[ ] zod schema: email format, password match, min length
-[ ] Connect to POST /register
-[ ] Save returned user to zustand store on success -> redirect to Find a Doctor
+[X] Build /signup page for patient (normal users) - form (name, email, password, confirm password)
+[X] zod schema: email format, password match, min length
+[X] Connect to POST /register
+[X] Save returned user to zustand store on success -> redirect to Find a Doctor
 
 ## STEP 3 - DOCTOR SIGNUP
-[ ] Build /signup/doctor page - form (name, email, password, confirm password)
-[ ] Connect to POST /doctor/register
-[ ] On success: show "pending approval" message (sonner) -> redirect to /login
+[X] Build /signup/doctor page - form (name, email, password, confirm password)
+[X] Connect to POST /doctor/register
+[X] On success: show "pending approval" message (sonner) -> redirect to /login
 
 ## STEP 4 - ADMIN: DOCTOR LIST + APPROVE/DISABLE
 [ ] Build /admin/doctors page
@@ -89,3 +87,5 @@
 [ ] Approve appointment as doctor
 [ ] Confirm full cycle works end-to-end
 
+! TODO: role redirect to there panels
+! TODO: role redirect to there panels
