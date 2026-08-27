@@ -40,7 +40,7 @@ class PatientRegisterController extends Controller
 
         return response()->json([
             'message' => 'Registration successful.',
-            'user' => $user,
+            'user' => $user->load('roles'),
         ], 201);
     }
 }

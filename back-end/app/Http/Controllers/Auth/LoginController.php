@@ -48,7 +48,7 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         return response([
-            'user' => $user,
+            'user' => $user->load('roles'),
         ], 200);
     }
 
