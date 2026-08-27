@@ -73,12 +73,28 @@ export function AdminDashboard() {
             <Card><CardHeader className="flex flex-row items-center justify-between pb-2"><CardTitle className="text-sm font-medium">Doctors</CardTitle><Stethoscope className="size-4 text-muted-foreground" /></CardHeader><CardContent><div className="text-2xl font-bold">{isLoading ? "—" : doctors.length}</div></CardContent></Card>
             <Card><CardHeader className="flex flex-row items-center justify-between pb-2"><CardTitle className="text-sm font-medium">Patients</CardTitle><Users className="size-4 text-muted-foreground" /></CardHeader><CardContent><div className="text-2xl font-bold">—</div></CardContent></Card>
             <Card><CardHeader className="flex flex-row items-center justify-between pb-2"><CardTitle className="text-sm font-medium">Appointments</CardTitle><CalendarDays className="size-4 text-muted-foreground" /></CardHeader><CardContent><div className="text-2xl font-bold">—</div></CardContent></Card>
-          </div>
-          <Card>
+          </div>            <Card>
             <CardHeader><CardTitle>Doctor registrations</CardTitle></CardHeader>
             <CardContent>
               {error && <p className="text-sm text-destructive">Could not load doctors.</p>}
-              {isLoading ? <div className="space-y-3"><Skeleton className="h-10 w-full" /><Skeleton className="h-10 w-full" /><Skeleton className="h-10 w-full" /></div> : (
+              {isLoading ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-4 gap-4 pb-3">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="ml-auto h-4 w-16" />
+                  </div>
+                  {["row-1", "row-2", "row-3"].map((row) => (
+                    <div key={row} className="grid grid-cols-4 items-center gap-4">
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-5 w-48 max-w-full" />
+                      <Skeleton className="h-5 w-20 rounded-full" />
+                      <Skeleton className="ml-auto h-9 w-24" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
                 <Table>
                   <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
                   <TableBody>

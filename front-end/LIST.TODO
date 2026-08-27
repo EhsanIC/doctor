@@ -43,10 +43,10 @@
 [X] Build /admin/doctors page
 [X] swr (useSWR + apiFetch) -> GET /admin/doctors
 [X] Render table: name, email, status (badge)
-[X] skeleton while loading
-[X] Approve/Disable button per row (dropdown-menu or inline button)
-[X] apiFetch PATCH /admin/doctors/{id}
-[X] mutate() to refresh table after action
+[ ] skeleton while loading
+[ ] Approve/Disable button per row (dropdown-menu or inline button)
+[ ] apiFetch PATCH /admin/doctors/{id}
+[ ] mutate() to refresh table after action
 
 ## STEP 5 - DOCTOR: COMPLETE PROFILE
 [ ] Build /doctor/profile page
