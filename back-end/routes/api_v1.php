@@ -17,7 +17,8 @@ Route::get('/hello', [HomeController::class, 'hello']);
 // INFO: route for admin access
 // TODO: add middlwear
 Route::prefix('/admin/doctors')->middleware('auth:sanctum', 'role:admin')->group(function () {
-    Route::apiResource('', AdminPanelDoctorManagement::class)->only(['index', 'update']);
+    Route::get('', [AdminPanelDoctorManagement::class, 'index']);
+    Route::match(['put', 'patch'], '/{doctor}', [AdminPanelDoctorManagement::class, 'update']);
     Route::apiResource('/profile', AdminPanelDoctorProfileController::class)->only(['index', 'update']);
 });
 

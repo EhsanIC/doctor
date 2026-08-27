@@ -43,7 +43,7 @@
 [X] Build /admin/doctors page
 [X] swr (useSWR + apiFetch) -> GET /admin/doctors
 [X] Render table: name, email, status (badge)
-[ ] skeleton while loading
+[X] skeleton while loading
 [ ] Approve/Disable button per row (dropdown-menu or inline button)
 [ ] apiFetch PATCH /admin/doctors/{id}
 [ ] mutate() to refresh table after action
