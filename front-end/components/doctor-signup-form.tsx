@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
+import { mutate } from "swr"
+import { toAppUser } from "@/hooks/useUser"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,6 +27,7 @@ const doctorSignupSchema = z.object({
 })
 
 type DoctorSignupFormData = z.infer<typeof doctorSignupSchema>
+type RawUser = { id: number; name: string; roles?: { name: string }[] }
 
 type Props = React.ComponentProps<"div">
 
@@ -36,14 +39,16 @@ export function DoctorSignupForm({ className, ...props }: Props) {
 
   async function onSubmit(data: DoctorSignupFormData) {
     try {
-      await apiFetch("/api/v1/doctor/register", {
+      const response = await apiFetch<{ user: RawUser }>("/api/v1/doctor/register", {
         method: "POST",
         body: JSON.stringify(data),
       })
+      const appUser = toAppUser(response.user)
+      mutate("/api/v1/me", appUser, false)
       toast.success("Registration submitted", {
         description: "Your account is pending admin approval.",
       })
-      router.replace("/login")
+      router.replace("/doctor")
     } catch (err) {
       setError("root", { message: err instanceof Error ? err.message : "Something went wrong" })
     }
