@@ -40,13 +40,13 @@
 [X] On success: show "pending approval" message (sonner) -> redirect to /login
 
 ## STEP 4 - ADMIN: DOCTOR LIST + APPROVE/DISABLE
-[ ] Build /admin/doctors page
-[ ] swr (useSWR + apiFetch) -> GET /admin/doctors
-[ ] Render table: name, email, status (badge)
-[ ] skeleton while loading
-[ ] Approve/Disable button per row (dropdown-menu or inline button)
-[ ] apiFetch PATCH /admin/doctors/{id}
-[ ] mutate() to refresh table after action
+[X] Build /admin/doctors page
+[X] swr (useSWR + apiFetch) -> GET /admin/doctors
+[X] Render table: name, email, status (badge)
+[X] skeleton while loading
+[X] Approve/Disable button per row (dropdown-menu or inline button)
+[X] apiFetch PATCH /admin/doctors/{id}
+[X] mutate() to refresh table after action
 
 ## STEP 5 - DOCTOR: COMPLETE PROFILE
 [ ] Build /doctor/profile page

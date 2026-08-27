@@ -15,9 +15,10 @@ class AdminPanelDoctorsManagementResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->doctorProfile?->id,
             'name' => $this->name,
             'email' => $this->email,
+            'status' => $this->doctorProfile?->status?->value,
 
             'profile' => new DoctorProfileResource($this->whenLoaded('doctorProfile')),
 
