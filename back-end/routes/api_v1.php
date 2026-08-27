@@ -64,7 +64,7 @@ Route::post('logout', [LoginController::class, 'logout'])->middleware('auth:sanc
 
 // INFO: get current user (for SPA to rehydrate on page refresh)
 Route::get('/me', function (\Illuminate\Http\Request $request) {
-    return response()->json($request->user());
+    return response()->json($request->user()->load('roles'));
 })->middleware('auth:sanctum');
 
 // TEST: middleware test
