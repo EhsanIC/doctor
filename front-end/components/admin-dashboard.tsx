@@ -3,7 +3,7 @@
 import { useState } from "react"
 import useSWR from "swr"
 import { toast } from "sonner"
-import { Activity, CalendarDays, LayoutDashboard, Stethoscope, Users } from "lucide-react"
+import { Activity, CalendarDays, Stethoscope, Users } from "lucide-react"
 import { apiFetch } from "@/lib/api"
 import { useUser } from "@/hooks/useUser"
 import { AppSidebar } from "@/components/app-sidebar"
@@ -58,10 +58,10 @@ export function AdminDashboard() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-14 items-center gap-2 border-b px-4">
+        <header className="flex h-14 items-center gap-2 border-b border-slate-300/70 px-4">
           <SidebarTrigger />
           <div className="flex items-center gap-2 text-sm font-medium">
-            <LayoutDashboard className="size-4" /> Admin dashboard
+            Admin dashboard
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-6 p-4 md:p-8">
@@ -96,7 +96,7 @@ export function AdminDashboard() {
                 </div>
               ) : (
                 <Table>
-                  <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
+                  <TableHeader><TableRow className="border-slate-300/70"><TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
                   <TableBody>
                     {doctors.map((doctor) => {
                       const name = doctor.name ?? doctor.user?.name ?? "Unknown doctor"
