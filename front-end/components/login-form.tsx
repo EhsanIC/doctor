@@ -35,6 +35,12 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 type RawUser = { id: number; name: string; roles?: { name: string }[] };
 
+function getRole(user: RawUser): AppUser["role"] {
+  const role = user.roles?.[0]?.name;
+  if (role === "admin" || role === "doctor" || role === "patient") return role;
+  return "patient";
+}
+
 const ROLE_REDIRECT: Record<AppUser["role"], string> = {
   admin: "/admin/doctors",
   doctor: "/doctor/appointments",
@@ -64,12 +70,15 @@ export function LoginForm({
         body: JSON.stringify(data),
       });
 
-      const appUser = toAppUser(response.user);
+      console.log("Login user response:", response.user);
+      const appUser = { ...toAppUser(response.user), role: getRole(response.user) };
 
       // Prime the SWR cache so any useUser() call sees the user immediately.
-      mutate("/api/v1/me", appUser, false);
+      await mutate("/api/v1/me", appUser, false);
 
+      // Refresh the route tree after the session cookie is established.
       router.replace(ROLE_REDIRECT[appUser.role]);
+      router.refresh();
     } catch (err) {
       setError("root", {
         message:

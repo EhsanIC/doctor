@@ -3,6 +3,17 @@
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
 
+function logAuthDebug(event: string, details: Record<string, unknown> = {}) {
+  void fetch("/api/debug-auth", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ event, ...details }),
+    keepalive: true,
+  }).catch(() => {
+    // Debug logging must never affect authentication.
+  });
+}
+
 export type AppUser = {
   id: number;
   name: string;
@@ -17,10 +28,11 @@ type RawUser = {
 };
 
 function toAppUser(raw: RawUser): AppUser {
+  const role = raw.roles?.[0]?.name;
   return {
     id: raw.id,
     name: raw.name,
-    role: (raw.roles?.[0]?.name as AppUser["role"]) ?? "patient",
+    role: role === "admin" || role === "doctor" || role === "patient" ? role : "patient",
   };
 }
 
@@ -28,10 +40,24 @@ export function useUser() {
   const { data, error, isLoading, mutate } = useSWR(
     "/api/v1/me",
     async (url) => {
-      const raw = await apiFetch<RawUser>(url);
-      return toAppUser(raw);
+      logAuthDebug("me_fetch_started", { url });
+      try {
+        const raw = await apiFetch<RawUser>(url);
+        const mappedUser = toAppUser(raw);
+        logAuthDebug("me_fetch_succeeded", {
+          rawUser: raw,
+          mappedUser,
+          resolvedRole: mappedUser.role,
+        });
+        return mappedUser;
+      } catch (error) {
+        logAuthDebug("me_fetch_failed", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+        throw error;
+      }
     },
-    { shouldRetryOnError: false },
+    { shouldRetryOnError: false, revalidateOnMount: true },
   );
 
   return {
