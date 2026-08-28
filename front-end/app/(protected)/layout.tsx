@@ -45,18 +45,10 @@ export default function ProtectedLayout({
       return;
     }
 
-    if (user.role !== "admin") {
-      const destination =
-        user.role === "doctor" ? "/doctor/appointments" : "/patient/doctors";
-      logAuthDebug("protected_layout_redirect_by_role", {
-        role: user.role,
-        destination,
-      });
-      router.replace(destination);
-      return;
-    }
-
-    logAuthDebug("protected_layout_admin_allowed", { role: user.role });
+    // Role-based access is enforced by the nested layouts (admin/, doctor/, patient/).
+    // This layout only guards authentication — redirecting by role here would
+    // bounce doctors/patients off any page other than their home panel.
+    logAuthDebug("protected_layout_user_allowed", { role: user.role });
   }, [isLoading, user, router]);
 
   if (isLoading || !user) {
