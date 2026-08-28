@@ -46,6 +46,7 @@ All non-Public routes also return `401` (missing/invalid token) and, where a rol
 | PUT | `/admin/specialties/{specialty}` | Edit a specialty (PUT) | Admin | 200 |
 | PATCH | `/admin/specialties/{specialty}` | Edit a specialty | Admin | 200 |
 | DELETE | `/admin/specialties/{specialty}` | Delete a specialty (soft delete) | Admin | 204 |
+| GET | `/specialties` | List all specialties (paginated) — reference list for forms | Public | 200 |
 
 ---
 

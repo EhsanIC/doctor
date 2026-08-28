@@ -26,6 +26,9 @@ Route::prefix('/admin/doctors')->middleware('auth:sanctum', 'role:admin')->group
 Route::apiResource('admin/specialties', SpecialtyController::class)
     ->middleware(['auth:sanctum', 'role:admin']);
 
+// INFO: specialty reference list (public — used by doctor profile form dropdown)
+Route::get('/specialties', [SpecialtyController::class, 'index']);
+
 // INFO: routes for doctor role
 Route::post('/doctor/register', [DoctorRegisterContoller::class, 'registerDoctor']);
 
@@ -64,8 +67,9 @@ Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
 
 // INFO: get current user (for SPA to rehydrate on page refresh)
+// INFO: doctor_profile is included so the doctor panel knows the profile id
 Route::get('/me', function (\Illuminate\Http\Request $request) {
-    return response()->json($request->user()->load('roles'));
+    return response()->json($request->user()->load(['roles', 'doctorProfile']));
 })->middleware('auth:sanctum');
 
 // TEST: middleware test

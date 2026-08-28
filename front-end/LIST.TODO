@@ -44,16 +44,16 @@
 [X] swr (useSWR + apiFetch) -> GET /admin/doctors
 [X] Render table: name, email, status (badge)
 [X] skeleton while loading
-[ ] Approve/Disable button per row (dropdown-menu or inline button)
-[ ] apiFetch PATCH /admin/doctors/{id}
-[ ] mutate() to refresh table after action
+[X] Approve/Disable button per row (dropdown-menu or inline button)
+[X] apiFetch PATCH /admin/doctors/{id}
+[X] mutate() to refresh table after action
 
 ## STEP 5 - DOCTOR: COMPLETE PROFILE
-[ ] Build /doctor/profile page
-[ ] Form: mobile, image upload, specialty (select), medical code, address, description (textarea), working hours
-[ ] Image upload handled via FormData (multipart, skip Content-Type header, keep credentials + X-XSRF-TOKEN)
-[ ] Connect to PATCH /doctor/profile/{id}
-[ ] sonner success toast on save
+[X] Build /doctor/profile page
+[X] Form: mobile, image upload, specialty (select), medical code, address, description (textarea), working hours
+[X] Image upload handled via FormData (multipart, skip Content-Type header, keep credentials + X-XSRF-TOKEN)
+[X] Connect to PATCH /doctor/profile/{id}
+[X] sonner success toast on save
 
 ## STEP 6 - PATIENT: FIND A DOCTOR
 [ ] Build /patient/doctors page

@@ -18,13 +18,17 @@ export type AppUser = {
   id: number;
   name: string;
   role: "admin" | "doctor" | "patient";
+  /** Doctor profile id — present when the user has a doctor profile. */
+  doctorProfileId?: number | null;
 };
 
-// Raw shape from Laravel — Spatie HasRoles appends `roles` array.
+// Raw shape from Laravel — Spatie HasRoles appends `roles` array,
+// and `/me` includes the eager-loaded `doctor_profile` relation.
 type RawUser = {
   id: number;
   name: string;
   roles?: { name: string }[];
+  doctor_profile?: { id: number } | null;
 };
 
 function toAppUser(raw: RawUser): AppUser {
@@ -33,11 +37,12 @@ function toAppUser(raw: RawUser): AppUser {
     id: raw.id,
     name: raw.name,
     role: role === "admin" || role === "doctor" || role === "patient" ? role : "patient",
+    doctorProfileId: raw.doctor_profile?.id ?? null,
   };
 }
 
 export function useUser() {
-  const { data, error, isLoading, mutate } = useSWR(
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
     "/api/v1/me",
     async (url) => {
       logAuthDebug("me_fetch_started", { url });
@@ -62,8 +67,10 @@ export function useUser() {
 
   return {
     user: data ?? null,
+    doctorProfileId: data?.doctorProfileId ?? null,
     isAuthenticated: !!data,
     isLoading,
+    isValidating,
     isError: !!error,
     mutate,
   };
