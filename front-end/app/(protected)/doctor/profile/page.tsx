@@ -1,5 +1,5 @@
-import { DoctorProfileForm } from "@/components/doctor-profile-form"
+import { DoctorProfileView } from "@/components/doctor-profile-view"
 
 export default function DoctorProfilePage() {
-  return <DoctorProfileForm />
+  return <DoctorProfileView />
 }

@@ -16,7 +16,7 @@ export default function PatientLayout({
     if (!user) return;
     if (user.role !== "patient") {
       router.replace(
-        user.role === "admin" ? "/admin/doctors" : "/doctor/appointments",
+        user.role === "admin" ? "/admin/doctors" : "/doctor",
       );
     }
   }, [user, router]);

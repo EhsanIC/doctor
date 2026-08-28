@@ -48,9 +48,10 @@
 [X] apiFetch PATCH /admin/doctors/{id}
 [X] mutate() to refresh table after action
 
-## STEP 5 - DOCTOR: COMPLETE PROFILE
-[X] Build /doctor/profile page
-[X] Form: mobile, image upload, specialty (select), medical code, address, description (textarea), working hours
+## STEP 5 - DOCTOR: PROFILE
+[X] Build /doctor/profile page (VIEW mode — shows photo, specialty, status, contact, working hours, bio)
+[ ] Build /doctor/profile/edit page (edit form — NOT for now)
+[X] Profile edit form component built (mobile, image upload, specialty select, medical code, address, description, working hours) — ready for the edit page
 [X] Image upload handled via FormData (multipart, skip Content-Type header, keep credentials + X-XSRF-TOKEN)
 [X] Connect to PATCH /doctor/profile/{id}
 [X] sonner success toast on save
@@ -70,7 +71,9 @@
 [ ] Connect to POST /patient/appointment
 [ ] sonner confirmation on success
 
-## STEP 8 - DOCTOR: MY APPOINTMENTS
+## STEP 8 - DOCTOR: DASHBOARD + MY APPOINTMENTS
+[X] Build /doctor dashboard (sidebar nav, stats cards, recent appointments table) — like the admin dashboard
+[X] Doctors redirect to /doctor (dashboard) after login
 [ ] Build /doctor/appointments page
 [ ] swr (useSWR + apiFetch) -> GET /doctor/appointment
 [ ] Render table: patient name, date, time, notes, status (badge)

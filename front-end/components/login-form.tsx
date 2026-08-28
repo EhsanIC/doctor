@@ -43,7 +43,7 @@ function getRole(user: RawUser): AppUser["role"] {
 
 const ROLE_REDIRECT: Record<AppUser["role"], string> = {
   admin: "/admin/doctors",
-  doctor: "/doctor/appointments",
+  doctor: "/doctor",
   patient: "/patient/doctors",
 };
 

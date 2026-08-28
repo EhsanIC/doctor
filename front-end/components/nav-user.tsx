@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import {
   Avatar,
   AvatarFallback,
@@ -20,16 +21,19 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
+import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon, UserRoundIcon } from "lucide-react"
 
 export function NavUser({
   user,
+  profileHref,
 }: {
   user: {
     name: string
     email: string
     avatar: string
   }
+  /** When set, shows a "Profile" item linking to the user's profile page. */
+  profileHref?: string
 }) {
   const { isMobile } = useSidebar()
   return (
@@ -97,6 +101,16 @@ export function NavUser({
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
+            {profileHref && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem render={<Link href={profileHref} />}>
+                  <UserRoundIcon
+                  />
+                  Profile
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOutIcon
