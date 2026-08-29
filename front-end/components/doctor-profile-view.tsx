@@ -26,10 +26,15 @@ type DoctorProfile = {
 };
 
 type Specialty = { id: number; name: string };
-type SpecialtiesResponse = Specialty[] | { data: Specialty[] };
+type SpecialtiesResponse =
+  | Specialty[]
+  | { data: Specialty[] }
+  | { data: { data: Specialty[] } };
 
 function getSpecialties(response: SpecialtiesResponse): Specialty[] {
-  return Array.isArray(response) ? response : response.data;
+  if (Array.isArray(response)) return response;
+  if (Array.isArray(response.data)) return response.data;
+  return response.data.data;
 }
 
 function getInitials(name: string): string {

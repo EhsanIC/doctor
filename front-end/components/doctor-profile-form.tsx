@@ -35,10 +35,15 @@ type DoctorProfile = {
 };
 
 type Specialty = { id: number; name: string };
-type SpecialtiesResponse = Specialty[] | { data: Specialty[] };
+type SpecialtiesResponse =
+  | Specialty[]
+  | { data: Specialty[] }
+  | { data: { data: Specialty[] } };
 
 function getSpecialties(response: SpecialtiesResponse): Specialty[] {
-  return Array.isArray(response) ? response : response.data;
+  if (Array.isArray(response)) return response;
+  if (Array.isArray(response.data)) return response.data;
+  return response.data.data;
 }
 
 const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -111,6 +116,10 @@ export function DoctorProfileForm() {
     { shouldRetryOnError: false },
   );
   const specialties = specialtiesData ? getSpecialties(specialtiesData) : [];
+  const selectedSpecialtyId = profileData?.specialty_id;
+  const selectedSpecialty = specialties.find(
+    (specialty) => String(specialty.id) === String(selectedSpecialtyId),
+  );
   const selectedSpecialtyExists = specialties.some(
     (specialty) => String(specialty.id) === String(profileData?.specialty_id),
   );
@@ -290,7 +299,9 @@ export function DoctorProfileForm() {
                         className="w-full"
                         aria-invalid={!!errors.specialty_id}
                       >
-                        <SelectValue placeholder="Select a specialty" />
+                        <SelectValue placeholder="Select a specialty">
+                          {selectedSpecialty?.name}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {specialties.map((specialty) => (
