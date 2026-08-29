@@ -1,11 +1,16 @@
 "use client"
 
-import Link from "next/link"
 import { useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useUser } from "@/hooks/useUser"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { PatientSidebar } from "@/components/patient-sidebar"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+
+const titles: Record<string, string> = {
+  "/patient/doctors": "Find a doctor",
+  "/patient/appointments": "My appointments",
+  "/patient/profile": "My profile",
+}
 
 export default function PatientLayout({
   children,
@@ -26,35 +31,17 @@ export default function PatientLayout({
   if (!user || user.role !== "patient") return null
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-64 shrink-0 border-r bg-card md:flex md:flex-col">
-        <div className="border-b p-6">
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <p className="truncate font-medium">{user.name}</p>
-              <p className="text-xs text-muted-foreground">Patient</p>
-            </div>
+    <SidebarProvider>
+      <PatientSidebar />
+      <SidebarInset>
+        <header className="flex h-14 items-center gap-2 border-b border-slate-300/70 px-4">
+          <SidebarTrigger />
+          <div className="flex items-center gap-2 text-sm font-medium">
+            {titles[pathname] ?? (pathname.startsWith("/patient/doctors/") ? "Doctor profile" : "Patient portal")}
           </div>
-        </div>
-        <nav className="flex-1 space-y-1 p-4">
-          <Button
-            variant={pathname.startsWith("/patient/doctors") ? "secondary" : "ghost"}
-            className="w-full justify-start"
-            render={<Link href="/patient/doctors" />}
-          >
-            Find a doctor
-          </Button>
-        </nav>
-      </aside>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center border-b px-4 md:px-8">
-          <span className="font-medium">{pathname.startsWith("/patient/doctors") ? "Find a doctor" : "Patient portal"}</span>
         </header>
         {children}
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
