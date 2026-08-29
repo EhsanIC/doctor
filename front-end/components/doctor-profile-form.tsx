@@ -306,9 +306,12 @@ export function DoctorProfileForm() {
                         className="w-full"
                         aria-invalid={!!errors.specialty_id}
                       >
-                        <SelectValue placeholder="Select a specialty">
-                          {selectedSpecialty?.name}
-                        </SelectValue>
+                        <SelectValue
+                          placeholder="Select a specialty"
+                          children={specialties.find(
+                            (specialty) => String(specialty.id) === String(field.value),
+                          )?.name}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {specialties.map((specialty) => (
