@@ -54,7 +54,7 @@ export function DoctorDashboard() {
           <div>
             <h1 className="text-2xl font-semibold">Welcome, {user?.name}</h1>
             <div className="flex items-center gap-4">
-              <Avatar className="size-[100px]">
+              <Avatar className="!size-[100px] shrink-0">
                 {profileImageUrl ? <AvatarImage src={profileImageUrl} alt="Profile photo" /> : null}
                 <AvatarFallback>{user?.name?.slice(0, 2).toUpperCase() ?? "DR"}</AvatarFallback>
               </Avatar>
