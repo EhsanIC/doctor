@@ -94,6 +94,8 @@ export function DoctorProfileForm() {
     formState: { errors, isSubmitting },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     defaultValues: {
       specialty_id: "",
       bio: "",
@@ -123,6 +125,7 @@ export function DoctorProfileForm() {
   const selectedSpecialtyExists = specialties.some(
     (specialty) => String(specialty.id) === String(profileData?.specialty_id),
   );
+  const isFormDataReady = Boolean(profileData && specialtiesData);
 
   // Prefill the form once the profile loads.
   useEffect(() => {
@@ -316,12 +319,12 @@ export function DoctorProfileForm() {
                 {specialtiesError && (
                   <FieldDescription className="text-destructive">Could not load specialties.</FieldDescription>
                 )}
-                {!specialtiesError && profileData?.specialty_id && !selectedSpecialtyExists && (
+                {isFormDataReady && !specialtiesError && profileData?.specialty_id && !selectedSpecialtyExists && (
                   <FieldDescription className="text-destructive">
                     Your current specialty is unavailable. Please select another specialty.
                   </FieldDescription>
                 )}
-                <FieldError errors={[errors.specialty_id]} />
+                {isFormDataReady && <FieldError errors={[errors.specialty_id]} />}
               </Field>
 
               <Field>
