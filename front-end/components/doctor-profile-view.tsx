@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
 import { useUser } from "@/hooks/useUser";
 import { DoctorShell } from "@/components/doctor-shell";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +17,7 @@ type DoctorProfile = {
   specialty_id: number | null;
   status: string;
   image: string | null;
+  image_url?: string | null;
   bio: string | null;
   mobile: string | null;
   medical_code: string | null;
@@ -140,6 +141,7 @@ export function DoctorProfileView() {
           <CardHeader>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <Avatar size="lg" className="size-16 text-base">
+                {profile.image_url ? <AvatarImage src={profile.image_url} alt={`${name} profile photo`} /> : null}
                 <AvatarFallback>{getInitials(name)}</AvatarFallback>
               </Avatar>
               <div className="space-y-1">

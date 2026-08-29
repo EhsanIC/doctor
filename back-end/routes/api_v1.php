@@ -35,6 +35,10 @@ Route::post('/doctor/register', [DoctorRegisterContoller::class, 'registerDoctor
 Route::prefix('/doctor')->middleware(['auth:sanctum', 'doctor.active'])->group(function () {
 
     // INFO: doctor profile
+    Route::get('/profile/{profile}/image', [DoctorProfileController::class, 'image'])
+        ->name('doctor.profile.image')
+        ->middleware('permission:profile.view')
+        ->can('view', 'profile');
     Route::get('/profile/{profile}', [DoctorProfileController::class, 'show'])
         ->middleware('permission:profile.view')
         ->can('view', 'profile');

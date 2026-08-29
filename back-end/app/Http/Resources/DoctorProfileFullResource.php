@@ -19,7 +19,7 @@ class DoctorProfileFullResource extends JsonResource
             'user_id' => $this->user_id,
             'specialty_id' => $this->specialty_id,
             'status' => $this->status,
-            'image' => $this->image,
+            'image' => $this->image ? asset('storage/'.$this->image) : null,
             'bio' => $this->bio,
             'mobile' => $this->mobile,
             'medical_code' => $this->medical_code,

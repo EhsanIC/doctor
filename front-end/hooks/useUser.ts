@@ -20,6 +20,7 @@ export type AppUser = {
   role: "admin" | "doctor" | "patient";
   /** Doctor profile id — present when the user has a doctor profile. */
   doctorProfileId?: number | null;
+  doctorProfileImageUrl?: string | null;
 };
 
 // Raw shape from Laravel — Spatie HasRoles appends `roles` array,
@@ -28,7 +29,7 @@ type RawUser = {
   id: number;
   name: string;
   roles?: { name: string }[];
-  doctor_profile?: { id: number } | null;
+  doctor_profile?: { id: number; image_url?: string | null; image?: string | null } | null;
 };
 
 function toAppUser(raw: RawUser): AppUser {
@@ -38,6 +39,7 @@ function toAppUser(raw: RawUser): AppUser {
     name: raw.name,
     role: role === "admin" || role === "doctor" || role === "patient" ? role : "patient",
     doctorProfileId: raw.doctor_profile?.id ?? null,
+    doctorProfileImageUrl: raw.doctor_profile?.image_url ?? null,
   };
 }
 

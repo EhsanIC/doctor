@@ -3,6 +3,7 @@
 import Link from "next/link"
 import useSWR from "swr"
 import { CalendarDaysIcon, CheckCircle2Icon, ClockIcon } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { apiFetch } from "@/lib/api"
 import { useUser } from "@/hooks/useUser"
 import { DoctorShell } from "@/components/doctor-shell"
@@ -29,6 +30,7 @@ function getAppointments(response: AppointmentsResponse): Appointment[] {
 
 export function DoctorDashboard() {
   const { user } = useUser()
+  const profileImageUrl = user?.doctorProfileImageUrl ?? null
   const { data, error, isLoading } = useSWR<AppointmentsResponse>(
     "/api/v1/doctor/appointment",
     (url) => apiFetch<AppointmentsResponse>(url),
@@ -51,7 +53,13 @@ export function DoctorDashboard() {
       <main className="flex flex-1 flex-col gap-6 p-4 md:p-8">
           <div>
             <h1 className="text-2xl font-semibold">Welcome, {user?.name}</h1>
-            <p className="text-muted-foreground">Manage your appointments and profile.</p>
+            <div className="flex items-center gap-4">
+              <Avatar className="size-16">
+                {profileImageUrl ? <AvatarImage src={profileImageUrl} alt="Profile photo" /> : null}
+                <AvatarFallback>{user?.name?.slice(0, 2).toUpperCase() ?? "DR"}</AvatarFallback>
+              </Avatar>
+              <p className="text-muted-foreground">Manage your appointments and profile.</p>
+            </div>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             <Card>

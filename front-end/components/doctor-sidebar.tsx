@@ -20,7 +20,7 @@ const data = {
   user: {
     name: "Doctor",
     email: "doctor@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "",
   },
   teams: [{ name: "Doctor Panel", logo: <StethoscopeIcon />, plan: "Doctor" }],
   navMain: [
@@ -43,6 +43,7 @@ export function DoctorSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
   const sidebarUser = {
     ...data.user,
     name: user?.name ?? data.user.name,
+    avatar: user?.doctorProfileImageUrl ?? data.user.avatar,
   }
 
   return (

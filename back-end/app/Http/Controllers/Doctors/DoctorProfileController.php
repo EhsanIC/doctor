@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateDoctorProfileRequest;
 use App\Models\DoctorProfile;
 use App\Services\DoctorProfileService;
+use Illuminate\Support\Facades\Storage;
 use OpenApi\Attributes as OA;
 
 class DoctorProfileController extends Controller
@@ -30,7 +31,12 @@ class DoctorProfileController extends Controller
     )]
     public function show(DoctorProfile $profile)
     {
-        return response()->json($this->service->show($profile));
+        $profile = $this->service->show($profile)->load('specialty');
+
+        return response()->json($profile->setAttribute(
+            'image_url',
+            $profile->image ? route('doctor.profile.image', ['profile' => $profile]) : null,
+        ));
     }
 
     #[OA\Patch(
@@ -61,6 +67,18 @@ class DoctorProfileController extends Controller
     {
         $profile = $this->service->updateOwn($profile, $request->validated(), $request->file('image'));
 
-        return response()->json($profile->load('user'));
+        $profile = $profile->load(['user', 'specialty']);
+
+        return response()->json($profile->setAttribute(
+            'image_url',
+            $profile->image ? route('doctor.profile.image', ['profile' => $profile]) : null,
+        ));
+    }
+
+    public function image(DoctorProfile $profile)
+    {
+        abort_unless($profile->image && Storage::disk('local')->exists($profile->image), 404);
+
+        return Storage::disk('local')->response($profile->image);
     }
 }

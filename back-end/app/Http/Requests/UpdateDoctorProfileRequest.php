@@ -24,7 +24,15 @@ class UpdateDoctorProfileRequest extends FormRequest
     {
         return [
             'specialty_id' => 'sometimes|required|integer|exists:specialties,id',
-            'image' => 'sometimes|required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => [
+                'sometimes',
+                'required',
+                'file',
+                'image',
+                'mimes:jpeg,png,jpg,webp',
+                'extensions:jpeg,jpg,png,webp',
+                'max:2048',
+            ],
             'bio' => 'sometimes|required|string',
             'mobile' => 'sometimes|required|string|max:20',
             'medical_code' => 'sometimes|required|string|max:50',

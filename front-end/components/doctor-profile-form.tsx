@@ -26,6 +26,7 @@ type DoctorProfile = {
   specialty_id: number | null;
   status: string;
   image: string | null;
+  image_url?: string | null;
   bio: string | null;
   mobile: string | null;
   medical_code: string | null;
@@ -147,6 +148,7 @@ export function DoctorProfileForm() {
   const imageList = useWatch({ control, name: "image" });
   const file = imageList?.[0] ?? null;
   const [preview, setPreview] = useState<string | null>(null);
+  const existingImage = profileData?.image_url ?? null;
   const [prevFile, setPrevFile] = useState<File | null>(null);
   if (file !== prevFile) {
     setPrevFile(file);
@@ -272,9 +274,11 @@ export function DoctorProfileForm() {
                 <FieldLabel htmlFor="image">Profile photo</FieldLabel>
                 <div className="flex items-center gap-4">
                   <Avatar size="lg" className="size-16">
-                    {preview ? <AvatarImage src={preview} alt="Profile preview" /> : null}
+                    {(preview || existingImage) ? (
+                      <AvatarImage src={preview ?? existingImage ?? undefined} alt="Profile photo" />
+                    ) : null}
                     <AvatarFallback>
-                      {preview ? null : <CameraIcon className="size-6" />}
+                      {preview || existingImage ? null : <CameraIcon className="size-6" />}
                     </AvatarFallback>
                   </Avatar>
                   <Input

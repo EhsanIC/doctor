@@ -19,7 +19,7 @@ class DoctorProfileResource extends JsonResource
             'user_id' => $this->user_id,
             'specialty_id' => $this->specialty_id,
             'status' => $this->status,
-            'image_url' => $this->image,
+            'image_url' => $this->image ? asset('storage/'.$this->image) : null,
             'bio' => $this->bio,
 
             // 'created_at' => $this->created_at?->toDateTimeString(),
