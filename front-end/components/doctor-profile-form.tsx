@@ -176,8 +176,8 @@ export function DoctorProfileForm() {
       });
       toast.success("Profile saved", {
         description: "Your profile has been updated.",
-        className: "border-green-200 bg-green-50 text-green-950",
-        descriptionClassName: "text-green-800",
+        className: "!border-green-300 !bg-green-50 !text-green-950 shadow-lg",
+        descriptionClassName: "!text-green-900",
       });
       await mutateProfile();
     } catch (err) {
