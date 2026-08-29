@@ -50,7 +50,7 @@
 
 ## STEP 5 - DOCTOR: PROFILE
 [X] Build /doctor/profile page (VIEW mode — shows photo, specialty, status, contact, working hours, bio)
-[ ] Build /doctor/profile/edit page (edit form — NOT for now)
+[X] Build /doctor/profile/edit page (edit form)
 [X] Profile edit form component built (mobile, image upload, specialty select, medical code, address, description, working hours) — ready for the edit page
 [X] Image upload handled via FormData (multipart, skip Content-Type header, keep credentials + X-XSRF-TOKEN)
 [X] Connect to PATCH /doctor/profile/{id}

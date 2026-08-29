@@ -30,7 +30,10 @@ const data = {
       title: "Profile",
       url: "/doctor/profile",
       icon: <UserRoundIcon />,
-      items: [{ title: "View profile", url: "/doctor/profile" }],
+      items: [
+        { title: "View profile", url: "/doctor/profile" },
+        { title: "Edit profile", url: "/doctor/profile/edit" },
+      ],
     },
   ],
 }

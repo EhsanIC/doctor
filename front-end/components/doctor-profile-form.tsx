@@ -41,6 +41,9 @@ function getSpecialties(response: SpecialtiesResponse): Specialty[] {
   return Array.isArray(response) ? response : response.data;
 }
 
+const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
+const maxImageSize = 2 * 1024 * 1024;
+
 // ── Validation ──────────────────────────────────────────────────────────────
 
 const profileSchema = z.object({
@@ -48,17 +51,12 @@ const profileSchema = z.object({
   image: z
     .instanceof(FileList)
     .optional()
-    .refine(
-      (files) =>
-        !files ||
-        files.length === 0 ||
-        ["image/jpeg", "image/png", "image/webp"].includes(files[0].type),
-      { message: "Image must be a JPEG, PNG or WebP file" },
-    )
-    .refine(
-      (files) => !files || files.length === 0 || files[0].size <= 2 * 1024 * 1024,
-      { message: "Image must be 2MB or smaller" },
-    ),
+    .refine((files) => !files || files.length === 0 || allowedImageTypes.includes(files[0].type), {
+      message: "Image must be a JPEG, PNG or WebP file",
+    })
+    .refine((files) => !files || files.length === 0 || files[0].size <= maxImageSize, {
+      message: "Image must be 2MB or smaller",
+    }),
   bio: z.string().trim().min(1, "Description is required"),
   mobile: z
     .string()
@@ -113,12 +111,17 @@ export function DoctorProfileForm() {
     { shouldRetryOnError: false },
   );
   const specialties = specialtiesData ? getSpecialties(specialtiesData) : [];
+  const selectedSpecialtyExists = specialties.some(
+    (specialty) => String(specialty.id) === String(profileData?.specialty_id),
+  );
 
   // Prefill the form once the profile loads.
   useEffect(() => {
     if (!profileData) return;
     reset({
-      specialty_id: profileData.specialty_id ? String(profileData.specialty_id) : "",
+      specialty_id: profileData.specialty_id !== null && profileData.specialty_id !== undefined
+        ? String(profileData.specialty_id)
+        : "",
       image: undefined,
       bio: profileData.bio ?? "",
       mobile: profileData.mobile ?? "",
@@ -162,7 +165,11 @@ export function DoctorProfileForm() {
         // X-XSRF-TOKEN header are still attached.
         body: formData,
       });
-      toast.success("Profile saved", { description: "Your profile has been updated." });
+      toast.success("Profile saved", {
+        description: "Your profile has been updated.",
+        className: "border-green-200 bg-green-50 text-green-950",
+        descriptionClassName: "text-green-800",
+      });
       await mutateProfile();
     } catch (err) {
       setError("root", { message: err instanceof Error ? err.message : "Could not save your profile" });
@@ -236,9 +243,9 @@ export function DoctorProfileForm() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4 md:p-8">
       <div>
-        <h1 className="text-2xl font-semibold">Complete your profile</h1>
+        <h1 className="text-2xl font-semibold">Edit your profile</h1>
         <p className="text-muted-foreground">
-          Tell patients about yourself so they can find and book you.
+          Keep your information up to date so patients can find and book you.
         </p>
       </div>
       <Card>
@@ -262,6 +269,7 @@ export function DoctorProfileForm() {
                     id="image"
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
+                    aria-invalid={!!errors.image}
                     className="max-w-xs"
                     {...register("image")}
                   />
@@ -277,7 +285,11 @@ export function DoctorProfileForm() {
                   name="specialty_id"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger id="specialty_id" className="w-full" aria-invalid={!!errors.specialty_id}>
+                      <SelectTrigger
+                        id="specialty_id"
+                        className="w-full"
+                        aria-invalid={!!errors.specialty_id}
+                      >
                         <SelectValue placeholder="Select a specialty" />
                       </SelectTrigger>
                       <SelectContent>
@@ -292,6 +304,11 @@ export function DoctorProfileForm() {
                 />
                 {specialtiesError && (
                   <FieldDescription className="text-destructive">Could not load specialties.</FieldDescription>
+                )}
+                {!specialtiesError && profileData?.specialty_id && !selectedSpecialtyExists && (
+                  <FieldDescription className="text-destructive">
+                    Your current specialty is unavailable. Please select another specialty.
+                  </FieldDescription>
                 )}
                 <FieldError errors={[errors.specialty_id]} />
               </Field>
