@@ -3,7 +3,6 @@
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
 import { useUser } from "@/hooks/useUser";
-import { DoctorShell } from "@/components/doctor-shell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -183,9 +182,5 @@ export function DoctorProfileView() {
     );
   }
 
-  return (
-    <DoctorShell title="My profile">
-      <main className="flex flex-1 flex-col p-4 md:p-8">{content}</main>
-    </DoctorShell>
-  );
+  return <main className="flex flex-1 flex-col p-4 md:p-8">{content}</main>;
 }

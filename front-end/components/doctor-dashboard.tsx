@@ -6,7 +6,6 @@ import { CalendarDaysIcon, CheckCircle2Icon, ClockIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { apiFetch } from "@/lib/api"
 import { useUser } from "@/hooks/useUser"
-import { DoctorShell } from "@/components/doctor-shell"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -49,7 +48,6 @@ export function DoctorDashboard() {
   const approvedCount = appointments.filter((a) => a.status === "approved").length
 
   return (
-    <DoctorShell title="Doctor dashboard">
       <main className="flex flex-1 flex-col gap-6 p-4 md:p-8">
           <div>
             <h1 className="text-2xl font-semibold">Welcome, {user?.name}</h1>
@@ -169,6 +167,5 @@ export function DoctorDashboard() {
             </CardContent>
           </Card>
       </main>
-    </DoctorShell>
   )
 }

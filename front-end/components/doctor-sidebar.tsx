@@ -24,7 +24,13 @@ const data = {
   },
   teams: [{ name: "Doctor Panel", logo: <StethoscopeIcon />, plan: "Doctor" }],
   navMain: [
-    { title: "Dashboard", url: "/doctor", icon: <LayoutDashboardIcon />, isActive: true },
+    {
+      title: "Dashboard",
+      url: "/doctor",
+      icon: <LayoutDashboardIcon />,
+      isActive: true,
+      items: [{ title: "Overview", url: "/doctor" }],
+    },
     { title: "Appointments", url: "/doctor/appointments", icon: <CalendarDaysIcon /> },
     {
       title: "Profile",
@@ -43,7 +49,11 @@ export function DoctorSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
   const sidebarUser = {
     ...data.user,
     name: user?.name ?? data.user.name,
-    avatar: user?.doctorProfileImageUrl ?? data.user.avatar,
+    avatar: user?.doctorProfileImageUrl ?? (
+      user?.doctorProfileId
+        ? `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/api/v1/doctor/profile/${user.doctorProfileId}/image`
+        : data.user.avatar
+    ),
   }
 
   return (

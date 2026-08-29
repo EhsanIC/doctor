@@ -1,26 +1,22 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@/hooks/useUser";
+import { usePathname } from "next/navigation"
+import { DoctorShell } from "@/components/doctor-shell"
+
+const titles: Record<string, string> = {
+  "/doctor": "Doctor dashboard",
+  "/doctor/profile": "My profile",
+  "/doctor/profile/edit": "Edit profile",
+  "/doctor/appointments": "Appointments",
+}
 
 export default function DoctorLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const { user } = useUser();
-  const router = useRouter();
+  const pathname = usePathname()
+  const title = titles[pathname] ?? "Doctor dashboard"
 
-  useEffect(() => {
-    if (!user) return;
-    if (user.role !== "doctor") {
-      router.replace(
-        user.role === "admin" ? "/admin/doctors" : "/patient/doctors",
-      );
-    }
-  }, [user, router]);
-
-  if (!user || user.role !== "doctor") return null;
-  return <>{children}</>;
+  return <DoctorShell title={title}>{children}</DoctorShell>
 }
