@@ -39,7 +39,7 @@ function toAppUser(raw: RawUser): AppUser {
     name: raw.name,
     role: role === "admin" || role === "doctor" || role === "patient" ? role : "patient",
     doctorProfileId: raw.doctor_profile?.id ?? null,
-    doctorProfileImageUrl: raw.doctor_profile?.image_url ?? null,
+    doctorProfileImageUrl: raw.doctor_profile?.image_url ?? raw.doctor_profile?.image ?? null,
   };
 }
 
