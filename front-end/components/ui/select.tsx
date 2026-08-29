@@ -115,19 +115,17 @@ function SelectItem({
 }: SelectPrimitive.Item.Props) {
   return (
     <SelectPrimitive.Item
-      data-slot="select-item"
-      className={cn(
-        "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+      data-slot="select-item"          className={cn(
+        "relative flex w-full cursor-default items-center gap-2 rounded-md py-2 pr-8 pl-3 text-sm outline-hidden select-none transition-colors focus:bg-sky-100 focus:text-sky-950 data-highlighted:bg-sky-100 data-highlighted:text-sky-950 data-selected:bg-sky-50 data-selected:text-sky-950 not-data-[variant=destructive]:focus:**:text-sky-950 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 dark:focus:bg-sky-950 dark:focus:text-sky-50 dark:data-highlighted:bg-sky-950 dark:data-highlighted:text-sky-50 dark:data-selected:bg-sky-900 dark:data-selected:text-sky-50",
         className
       )}
       {...props}
     >
       <SelectPrimitive.ItemText className="flex flex-1 shrink-0 gap-2 whitespace-nowrap">
         {children}
-      </SelectPrimitive.ItemText>
-      <SelectPrimitive.ItemIndicator
+      </SelectPrimitive.ItemText>          <SelectPrimitive.ItemIndicator
         render={
-          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
+          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center text-sky-700 dark:text-sky-300" />
         }
       >
         <CheckIcon className="pointer-events-none" />
