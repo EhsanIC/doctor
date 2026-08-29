@@ -57,11 +57,11 @@
 [X] sonner success toast on save
 
 ## STEP 6 - PATIENT: FIND A DOCTOR
-[ ] Build /patient/doctors page
-[ ] swr (useSWR + apiFetch) -> GET /patient/appointment (returns approved doctors)
-[ ] Render doctor cards: name, specialty (badge), avatar/photo
-[ ] skeleton cards while loading
-[ ] Each card links to /patient/doctors/[id]
+[X] Build /patient/doctors page
+[X] swr (useSWR + apiFetch) -> GET /patient/appointment (returns approved doctors)
+[X] Render doctor cards: name, specialty (badge), avatar/photo
+[X] skeleton cards while loading
+[X] Each card links to /patient/doctors/[id]
 
 ## STEP 7 - PATIENT: DOCTOR DETAIL + BOOKING
 [ ] Build /patient/doctors/[id] page
