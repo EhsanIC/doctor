@@ -39,7 +39,10 @@ function toAppUser(raw: RawUser): AppUser {
     name: raw.name,
     role: role === "admin" || role === "doctor" || role === "patient" ? role : "patient",
     doctorProfileId: raw.doctor_profile?.id ?? null,
-    doctorProfileImageUrl: raw.doctor_profile?.image_url ?? raw.doctor_profile?.image ?? null,
+    doctorProfileImageUrl: raw.doctor_profile?.image_url
+      ?? (raw.doctor_profile?.image
+        ? `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}/api/v1/doctor/profile/${raw.doctor_profile.id}/image`
+        : null),
   };
 }
 

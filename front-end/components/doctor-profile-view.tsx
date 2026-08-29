@@ -140,7 +140,7 @@ export function DoctorProfileView() {
         <Card>
           <CardHeader>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Avatar size="lg" className="size-16 text-base">
+              <Avatar size="lg" className="size-[100px] text-base">
                 {profile.image_url ? <AvatarImage src={profile.image_url} alt={`${name} profile photo`} /> : null}
                 <AvatarFallback>{getInitials(name)}</AvatarFallback>
               </Avatar>

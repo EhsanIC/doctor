@@ -273,7 +273,7 @@ export function DoctorProfileForm() {
               <Field>
                 <FieldLabel htmlFor="image">Profile photo</FieldLabel>
                 <div className="flex items-center gap-4">
-                  <Avatar size="lg" className="size-16">
+                  <Avatar size="lg" className="size-[100px]">
                     {(preview || existingImage) ? (
                       <AvatarImage src={preview ?? existingImage ?? undefined} alt="Profile photo" />
                     ) : null}
