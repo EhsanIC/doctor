@@ -26,7 +26,12 @@ const data = {
   navMain: [
     { title: "Dashboard", url: "/doctor", icon: <LayoutDashboardIcon />, isActive: true },
     { title: "Appointments", url: "/doctor/appointments", icon: <CalendarDaysIcon /> },
-    { title: "Profile", url: "/doctor/profile", icon: <UserRoundIcon /> },
+    {
+      title: "Profile",
+      url: "/doctor/profile",
+      icon: <UserRoundIcon />,
+      items: [{ title: "View profile", url: "/doctor/profile" }],
+    },
   ],
 }
 
