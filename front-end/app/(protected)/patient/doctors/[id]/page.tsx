@@ -3,14 +3,28 @@
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
+import { z } from "zod"
+import { format } from "date-fns"
+import { ChevronDownIcon } from "lucide-react"
 import useSWR from "swr"
 import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetch } from "@/lib/api"
+
+const appointmentSchema = z.object({
+  doctor_id: z.number().int().positive(),
+  appointment_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a valid appointment date."),
+  appointment_time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Choose a valid appointment time."),
+  description: z.string().nullable(),
+})
 
 type Doctor = {
   id: number
@@ -26,8 +40,8 @@ type Doctor = {
 export default function DoctorDetailPage() {
   const params = useParams<{ id: string }>()
   const router = useRouter()
-  const [date, setDate] = useState("")
-  const [time, setTime] = useState("")
+  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [time, setTime] = useState("10:30")
   const [description, setDescription] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { data: doctor, error, isLoading } = useSWR<Doctor | { data: Doctor }>(
@@ -43,16 +57,24 @@ export default function DoctorDetailPage() {
       return
     }
 
+    const appointment = {
+      doctor_id: Number(params.id),
+      appointment_date: format(date, "yyyy-MM-dd"),
+      appointment_time: time.slice(0, 5),
+      description: description || null,
+    }
+    const result = appointmentSchema.safeParse(appointment)
+
+    if (!result.success) {
+      toast.error(result.error.issues[0]?.message ?? "Enter valid appointment details.")
+      return
+    }
+
     setIsSubmitting(true)
     try {
       await apiFetch("/api/v1/patient/appointment", {
         method: "POST",
-        body: JSON.stringify({
-          doctor_id: Number(params.id),
-          appointment_date: date,
-          appointment_time: time,
-          description: description || null,
-        }),
+        body: JSON.stringify(result.data),
       })
       toast.success("Appointment request sent successfully.")
       router.push("/patient/appointments")
@@ -99,8 +121,21 @@ export default function DoctorDetailPage() {
           <CardHeader><CardTitle>Book an appointment</CardTitle><CardDescription>Send an appointment request to this doctor.</CardDescription></CardHeader>
           <CardContent>
             <form onSubmit={bookAppointment} className="space-y-4">
-              <label className="block text-sm font-medium">Date<input required type="date" min={new Date().toISOString().split("T")[0]} value={date} onChange={(event) => setDate(event.target.value)} className="mt-1 flex h-9 w-full rounded-md border bg-transparent px-3 text-sm" /></label>
-              <label className="block text-sm font-medium">Time<input required type="time" value={time} onChange={(event) => setTime(event.target.value)} className="mt-1 flex h-9 w-full rounded-md border bg-transparent px-3 text-sm" /></label>
+              <FieldGroup className="flex-row">
+                <Field>
+                  <FieldLabel htmlFor="appointment-date">Date</FieldLabel>
+                  <Popover>
+                    <PopoverTrigger render={<Button variant="outline" id="appointment-date" className="w-full justify-between font-normal">{date ? format(date, "PPP") : "Select date"}<ChevronDownIcon data-icon="inline-end" /></Button>} />
+                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                      <Calendar mode="single" selected={date} disabled={{ before: new Date() }} onSelect={setDate} />
+                    </PopoverContent>
+                  </Popover>
+                </Field>
+                <Field className="w-32">
+                  <FieldLabel htmlFor="appointment-time">Time</FieldLabel>
+                  <Input type="time" id="appointment-time" step="60" value={time} onChange={(event) => setTime(event.target.value.slice(0, 5))} className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none" />
+                </Field>
+              </FieldGroup>
               <label className="block text-sm font-medium">Notes<textarea value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Optional notes" className="mt-1 min-h-24 w-full rounded-md border bg-transparent px-3 py-2 text-sm" /></label>
               <Button type="submit" disabled={isSubmitting} className="w-full">{isSubmitting ? "Booking..." : "Book appointment"}</Button>
             </form>
