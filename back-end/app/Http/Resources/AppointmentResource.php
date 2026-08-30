@@ -25,7 +25,16 @@ class AppointmentResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user' => new UserResource($this->whenLoaded('user')),
-            'doctor_profile' => new DoctorProfileResource($this->whenLoaded('doctorProfile')),
+            'doctor_profile' => $this->whenLoaded('doctorProfile', function () {
+                return [
+                    'id' => $this->doctorProfile->id,
+                    'name' => $this->doctorProfile->user?->name,
+                    'specialty' => $this->doctorProfile->specialty ? [
+                        'id' => $this->doctorProfile->specialty->id,
+                        'name' => $this->doctorProfile->specialty->name,
+                    ] : null,
+                ];
+            }),
         ];
     }
 }
