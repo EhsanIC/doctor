@@ -20,6 +20,18 @@ class AppointmentService
     }
 
     /**
+     * List appointments belonging to a patient, paginated and eager loaded.
+     */
+    public function listForPatient(User $user): LengthAwarePaginator
+    {
+        return Appointment::with(['doctorProfile.user', 'doctorProfile.specialty'])
+            ->where('user_id', $user->id)
+            ->latest('appointment_date')
+            ->latest('appointment_time')
+            ->paginate();
+    }
+
+    /**
      * Update an appointment's status (ownership is enforced by a Policy).
      */
     public function updateStatus(Appointment $appointment, array $data): Appointment

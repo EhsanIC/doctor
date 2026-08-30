@@ -64,12 +64,18 @@
 [X] Each card links to /patient/doctors/[id]
 
 ## STEP 7 - PATIENT: DOCTOR DETAIL + BOOKING
-[ ] Build /patient/doctors/[id] page
-[ ] Show doctor profile (card): name, specialty, bio, address, working hours
-[ ] Booking form: calendar+popover (date), time input, textarea (notes)
-[ ] zod schema: date + time required, notes optional
-[ ] Connect to POST /patient/appointment
-[ ] sonner confirmation on success
+[X] Build /patient/doctors/[id] page
+[X] Show doctor profile (card): name, specialty, bio, address, working hours
+[X] Booking form: calendar+popover (date), time input, textarea (notes)
+[X] zod schema: date + time required, notes optional
+[X] Connect to POST /patient/appointment
+[X] sonner confirmation on success
+
+## STEP 7B - PATIENT: MY APPOINTMENTS
+[X] Build /patient/appointments page
+[X] Add patient appointments API endpoint with patient ownership filtering
+[X] Render doctor, specialty, date, time, notes, and status
+[X] Show loading, empty, and error states
 
 ## STEP 8 - DOCTOR: DASHBOARD + MY APPOINTMENTS
 [X] Build /doctor dashboard (sidebar nav, stats cards, recent appointments table) — like the admin dashboard

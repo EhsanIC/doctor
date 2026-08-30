@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientAppointmentRequest;
+use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\DoctorProfileFullResource;
 use App\Http\Resources\PatientDoctorResource;
 use App\Models\DoctorProfile;
@@ -33,6 +34,11 @@ class PatientController extends Controller
     public function index()
     {
         return PatientDoctorResource::collection($this->doctorProfileService->listActive());
+    }
+
+    public function appointments()
+    {
+        return AppointmentResource::collection($this->appointmentService->listForPatient(request()->user()));
     }
 
     public function show(DoctorProfile $profile)
