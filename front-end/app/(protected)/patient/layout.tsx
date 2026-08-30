@@ -7,6 +7,7 @@ import { PatientSidebar } from "@/components/patient-sidebar"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 
 const titles: Record<string, string> = {
+  "/patient": "Dashboard",
   "/patient/doctors": "Find a doctor",
   "/patient/appointments": "My appointments",
   "/patient/profile": "My profile",

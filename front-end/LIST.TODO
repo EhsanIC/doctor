@@ -71,6 +71,11 @@
 [X] Connect to POST /patient/appointment
 [X] sonner confirmation on success
 
+## PATIENT DASHBOARD
+[X] Build /patient overview dashboard
+[X] Show appointment totals and pending requests
+[X] Show next appointment summary and quick navigation
+
 ## STEP 7B - PATIENT: MY APPOINTMENTS
 [X] Build /patient/appointments page
 [X] Add patient appointments API endpoint with patient ownership filtering

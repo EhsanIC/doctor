@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CalendarDaysIcon, LayoutDashboardIcon, SearchIcon, UserRoundIcon, StethoscopeIcon } from "lucide-react"
+import { CalendarDaysIcon, LayoutDashboardIcon, UserRoundIcon, StethoscopeIcon } from "lucide-react"
 import { useUser } from "@/hooks/useUser"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -24,16 +24,10 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/patient/doctors",
+      url: "/patient",
       icon: <LayoutDashboardIcon />,
       isActive: true,
-      items: [{ title: "Find a doctor", url: "/patient/doctors" }],
-    },
-    {
-      title: "Doctors",
-      url: "/patient/doctors",
-      icon: <SearchIcon />,
-      items: [{ title: "Find a doctor", url: "/patient/doctors" }],
+      items: [{ title: "Overview", url: "/patient" }],
     },
     {
       title: "Appointments",
