@@ -31,7 +31,12 @@ const data = {
       isActive: true,
       items: [{ title: "Overview", url: "/doctor" }],
     },
-    { title: "Appointments", url: "/doctor/appointments", icon: <CalendarDaysIcon /> },
+    {
+      title: "Appointments",
+      url: "/doctor/appointments",
+      icon: <CalendarDaysIcon />,
+      items: [{ title: "My appointments", url: "/doctor/appointments" }],
+    },
     {
       title: "Profile",
       url: "/doctor/profile",
