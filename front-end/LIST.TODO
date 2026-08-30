@@ -93,13 +93,13 @@
 [X] mutate() to refresh table after action
 
 ## FINAL TEST
-[ ] Register a doctor
-[ ] Approve doctor as admin
-[ ] Complete doctor profile
-[ ] Register a patient
-[ ] Book appointment as patient
-[ ] Approve appointment as doctor
-[ ] Confirm full cycle works end-to-end
+[X] Register a doctor
+[X] Approve doctor as admin
+[X] Complete doctor profile
+[X] Register a patient
+[X] Book appointment as patient
+[X] Approve appointment as doctor
+[X] Confirm full cycle works end-to-end
 
 ! TODO: role redirect to there panels
 ! TODO: role redirect to there panels

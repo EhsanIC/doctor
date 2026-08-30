@@ -1,6 +1,10 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { apiFetchNoContent } from "@/lib/api"
+import { useUser } from "@/hooks/useUser"
 import {
   Avatar,
   AvatarFallback,
@@ -36,6 +40,24 @@ export function NavUser({
   profileHref?: string
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+  const { mutate } = useUser()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  async function handleLogout() {
+    if (isLoggingOut) return
+    setIsLoggingOut(true)
+    try {
+      await apiFetchNoContent("/api/v1/logout", { method: "POST" })
+      await mutate(undefined, { revalidate: false })
+      router.replace("/login")
+    } catch {
+      router.replace("/login")
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -112,10 +134,9 @@ export function NavUser({
               </>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOutIcon
-              />
-              Log out
+            <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
+              <LogOutIcon />
+              {isLoggingOut ? "Logging out..." : "Log out"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
