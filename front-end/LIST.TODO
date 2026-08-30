@@ -85,12 +85,12 @@
 ## STEP 8 - DOCTOR: DASHBOARD + MY APPOINTMENTS
 [X] Build /doctor dashboard (sidebar nav, stats cards, recent appointments table) — like the admin dashboard
 [X] Doctors redirect to /doctor (dashboard) after login
-[ ] Build /doctor/appointments page
-[ ] swr (useSWR + apiFetch) -> GET /doctor/appointment
-[ ] Render table: patient name, date, time, notes, status (badge)
-[ ] Approve/Cancel button per row
-[ ] apiFetch PATCH /doctor/appointment/{id}
-[ ] mutate() to refresh table after action
+[X] Build /doctor/appointments page
+[X] swr (useSWR + apiFetch) -> GET /doctor/appointment
+[X] Render table: patient name, date, time, notes, status (badge)
+[X] Approve/Cancel button per row
+[X] apiFetch PATCH /doctor/appointment/{id}
+[X] mutate() to refresh table after action
 
 ## FINAL TEST
 [ ] Register a doctor
