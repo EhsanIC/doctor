@@ -61,6 +61,8 @@ Route::get('/patient/doctors/{profile}/image', [DoctorProfileController::class, 
 
 Route::prefix('/patient/appointment')->middleware('auth:sanctum')->group(function () {
     Route::get('', [PatientController::class, 'index'])->middleware('permission:doctor.view');
+    Route::get('/{profile}', [PatientController::class, 'show'])
+        ->middleware('permission:doctor.view');
     Route::post('', [PatientController::class, 'getAppointment'])->middleware('permission:appointment.create');
 });
 

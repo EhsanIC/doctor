@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Patient;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientAppointmentRequest;
 use App\Http\Resources\DoctorProfileFullResource;
+use App\Http\Resources\PatientDoctorResource;
+use App\Models\DoctorProfile;
+use App\Enums\DoctorStatus;
 use App\Services\AppointmentService;
 use App\Services\DoctorProfileService;
 use OpenApi\Attributes as OA;
@@ -29,7 +32,14 @@ class PatientController extends Controller
     )]
     public function index()
     {
-        return DoctorProfileFullResource::collection($this->doctorProfileService->listActive());
+        return PatientDoctorResource::collection($this->doctorProfileService->listActive());
+    }
+
+    public function show(DoctorProfile $profile)
+    {
+        abort_unless($profile->status === DoctorStatus::ACTIVE, 404);
+
+        return new PatientDoctorResource($this->doctorProfileService->showActive($profile));
     }
 
     #[OA\Post(

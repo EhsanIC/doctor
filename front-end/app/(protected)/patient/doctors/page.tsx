@@ -11,6 +11,7 @@ import { apiFetch } from "@/lib/api"
 type Doctor = {
   id: number
   image: string | null
+  image_url?: string | null
   user?: { name: string; email: string }
   specialty?: { name: string }
 }
@@ -69,7 +70,7 @@ export default function FindDoctorPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {doctors.map((doctor) => {
             const name = doctor.user?.name ?? "Doctor"
-            const imageUrl = doctor.image
+            const imageUrl = doctor.image_url ?? doctor.image
             return (
               <Card key={doctor.id} className="transition-shadow hover:shadow-md">
                 <CardHeader className="flex flex-row items-center gap-4">

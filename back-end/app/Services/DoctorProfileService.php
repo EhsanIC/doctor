@@ -45,6 +45,11 @@ class DoctorProfileService
         return $profile->load('user');
     }
 
+    public function showActive(DoctorProfile $profile): DoctorProfile
+    {
+        return $profile->load(['user', 'specialty']);
+    }
+
     /**
      * Update a doctor profile (admin edit).
      */
