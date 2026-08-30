@@ -16,6 +16,7 @@ type Appointment = {
   description: string | null
   status: "pending" | "approved" | "canceled"
   doctor_profile?: {
+    name?: string | null
     user?: { name: string | null }
     specialty?: { name: string } | null
   }
@@ -83,7 +84,7 @@ export default function PatientAppointmentsPage() {
                 <TableBody>
                   {appointments.map((appointment) => (
                     <TableRow key={appointment.id}>
-                      <TableCell className="font-medium">{appointment.doctor_profile?.user?.name ?? "Unknown doctor"}</TableCell>
+                      <TableCell className="font-medium">{appointment.doctor_profile?.name ?? appointment.doctor_profile?.user?.name ?? "Unknown doctor"}</TableCell>
                       <TableCell>{appointment.doctor_profile?.specialty?.name ?? "—"}</TableCell>
                       <TableCell>{appointment.appointment_date}</TableCell>
                       <TableCell>{appointment.appointment_time.slice(0, 5)}</TableCell>
