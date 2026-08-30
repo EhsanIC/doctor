@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientAppointmentRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Http\Resources\DoctorProfileFullResource;
+use Illuminate\Http\Request;
 use App\Http\Resources\PatientDoctorResource;
 use App\Models\DoctorProfile;
 use App\Enums\DoctorStatus;
@@ -36,9 +37,9 @@ class PatientController extends Controller
         return PatientDoctorResource::collection($this->doctorProfileService->listActive());
     }
 
-    public function appointments()
+    public function appointments(Request $request)
     {
-        return AppointmentResource::collection($this->appointmentService->listForPatient(request()->user()));
+        return AppointmentResource::collection($this->appointmentService->listForPatient($request->user()));
     }
 
     public function show(DoctorProfile $profile)

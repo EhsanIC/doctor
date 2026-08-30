@@ -107,6 +107,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $patient->givePermissionTo([
             'doctor.view',
             'appointment.create',
+            'appointment.view',
         ]);
     }
 }
