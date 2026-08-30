@@ -69,11 +69,12 @@ export default function FindDoctorPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {doctors.map((doctor) => {
             const name = doctor.user?.name ?? "Doctor"
+            const imageUrl = doctor.image
             return (
               <Card key={doctor.id} className="transition-shadow hover:shadow-md">
                 <CardHeader className="flex flex-row items-center gap-4">
                   <Avatar className="!size-16 shrink-0">
-                    {doctor.image ? <AvatarImage src={doctor.image} alt={`${name} profile photo`} /> : null}
+                    {imageUrl ? <AvatarImage src={imageUrl} alt={`${name} profile photo`} /> : null}
                     <AvatarFallback>{getInitials(name) || "DR"}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 space-y-1">

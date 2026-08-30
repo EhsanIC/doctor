@@ -7,6 +7,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DoctorProfileFullResource extends JsonResource
 {
+    private function imageUrl(Request $request): string
+    {
+        return $request->user()?->can('doctor.view')
+            ? route('patient.doctor.profile.image', ['profile' => $this->id])
+            : route('doctor.profile.image', ['profile' => $this->id]);
+    }
     /**
      * Transform the resource into an array.
      *
@@ -19,7 +25,8 @@ class DoctorProfileFullResource extends JsonResource
             'user_id' => $this->user_id,
             'specialty_id' => $this->specialty_id,
             'status' => $this->status,
-            'image' => $this->image ? asset('storage/'.$this->image) : null,
+            'image' => $this->image ? $this->imageUrl($request) : null,
+            'image_url' => $this->image ? $this->imageUrl($request) : null,
             'bio' => $this->bio,
             'mobile' => $this->mobile,
             'medical_code' => $this->medical_code,

@@ -55,6 +55,10 @@ Route::prefix('/doctor')->middleware(['auth:sanctum', 'doctor.active'])->group(f
 
 // BUG: not getting redirect to login route
 //  instead getting redirect to home page
+Route::get('/patient/doctors/{profile}/image', [DoctorProfileController::class, 'image'])
+    ->name('patient.doctor.profile.image')
+    ->middleware(['auth:sanctum', 'permission:doctor.view']);
+
 Route::prefix('/patient/appointment')->middleware('auth:sanctum')->group(function () {
     Route::get('', [PatientController::class, 'index'])->middleware('permission:doctor.view');
     Route::post('', [PatientController::class, 'getAppointment'])->middleware('permission:appointment.create');
