@@ -49,9 +49,10 @@ export function NavUser({
     setIsLoggingOut(true)
     try {
       await apiFetchNoContent("/api/v1/logout", { method: "POST" })
-      await mutate(undefined, { revalidate: false })
+      await mutate(null, { revalidate: false })
       router.replace("/login")
     } catch {
+      await mutate(null, { revalidate: false })
       router.replace("/login")
     } finally {
       setIsLoggingOut(false)

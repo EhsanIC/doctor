@@ -55,10 +55,9 @@ async function buildHeaders(options: RequestInit): Promise<Headers> {
 
 async function handleResponse(res: Response): Promise<Response> {
   if (res.status === 401) {
-    // Session expired — clear SWR cache and hard-redirect.
+    // Session expired — clear SWR cache. Navigation is handled by the route guard.
     const { mutate } = await import("swr");
-    mutate("/api/v1/me", undefined, { revalidate: false });
-    window.location.href = "/login";
+    await mutate("/api/v1/me", undefined, { revalidate: false });
   }
 
   if (!res.ok) {
