@@ -70,7 +70,7 @@ class PatientController extends Controller
         $appointment = $this->appointmentService->book($request->validated(), $request->user());
 
         return response()->json([
-            'message' => 'نوبت با موفقیت ثبت شد.',
+            'message' => 'Appointment booked successfully.',
             'data' => $appointment,
         ], 201);
     }

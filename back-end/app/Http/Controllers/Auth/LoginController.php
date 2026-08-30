@@ -41,7 +41,7 @@ class LoginController extends Controller
         $user = User::where('email', $fields['email'])->first();
 
         if (! $user || ! Hash::check($fields['password'], $user->password)) {
-            return response(['message' => 'اطلاعات وارد شده اشتباه است'], 401);
+            return response(['message' => 'The email or password is incorrect.'], 401);
         }
 
         Auth::guard('web')->login($user);

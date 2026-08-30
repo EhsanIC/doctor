@@ -50,7 +50,7 @@ class DoctorRegisterContoller extends Controller
         // 5. بازگرداندن پاسخ موفقیت آمیز
         // در اینجا توکن API را برنمی‌گردانیم چون پزشک هنوز تایید نشده است
         return response()->json([
-            'message' => 'ثبت نام پزشک با موفقیت انجام شد. حساب شما در انتظار تایید مدیر است.',
+            'message' => 'Doctor registration successful. Your account is waiting for admin approval.',
             'user' => $user->load('roles'), // می توانید اطلاعات کاربر را برگردانید
             'doctor_profile' => $doctorProfile, // و اطلاعات پروفایل پزشک را
         ], 201);
